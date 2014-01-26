@@ -7,10 +7,84 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 using namespace glm;
 
-GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path){
+class Camera
+{
+private:
+    
+    glm::vec3 position;
+    glm::vec3 direction;
+    glm::vec3 up;
 
+public:
+    Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
+    glm::mat4 GetViewMatrix();
+    void MoveForward(float distance);
+    void MoveBackward(float distance);
+    void MoveLeft(float distance);
+    void MoveRight(float distance);
+    void MoveUp(float distance);
+    void MoveDown(float distance);
+    void RotateX(float angle);
+    void RotateY(float angle);
+};
+
+Camera::Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
+{
+    this->position = position;
+    this->direction = glm::normalize(direction);
+    this->up = glm::normalize(up);
+}
+glm::mat4 Camera::GetViewMatrix()
+{
+    return glm::lookAt( position, position + direction, up );
+}
+
+void Camera::MoveForward(float distance)
+{
+    position = position + (direction * distance);
+}
+
+void Camera::MoveBackward(float distance)
+{
+    position = position + (direction * (distance * (-1)));
+}
+
+void Camera::MoveRight(float distance)
+{
+    position = position + cross(direction, up) * distance; 
+}
+void Camera::MoveLeft(float distance)
+{
+    position = position + cross(up, direction) * distance;     
+}
+void Camera::MoveUp(float distance)
+{
+    position = position + (up * distance);
+}
+
+void Camera::MoveDown(float distance)
+{
+    position = position + (up * (distance * (-1)));
+}
+
+void Camera::RotateX(float angle)
+{
+    direction = glm::rotate(direction, angle, up);
+}
+
+void Camera::RotateY(float angle)
+{
+    glm::vec3 aux = cross(direction,up);
+    direction = glm::rotate(direction, angle, aux);
+    up = glm::rotate(up, angle, aux);    
+}
+
+
+GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path)
+{
     // Create the shaders
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
     GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -119,6 +193,9 @@ SDL_Window* init_sdl()
         std::cout << version << std::endl;
     }
 
+
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+    
     glewExperimental = GL_TRUE; 
     glewInit();
     return window;
@@ -138,13 +215,6 @@ int main(int argc, char **argv)
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
-
-    // An array of 3 vectors which represents 3 vertices
-    /*static const GLfloat g_vertex_buffer_data[] = {
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        0.0f,  1.0f, 0.0f,
-        };*/
 
     static const GLfloat g_vertex_buffer_data[] = {
         1.0f, 1.0f,-1.0f,
@@ -253,6 +323,9 @@ int main(int argc, char **argv)
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders( "shaders/simple.vert", "shaders/simple.frag" );
 
+
+    Camera camera(glm::vec3(-5,0,0), glm::vec3(1,0,0),glm::vec3(0,1,0));
+    
     SDL_Event windowEvent;
     Uint32 gticks2;
     bool quit;
@@ -260,22 +333,56 @@ int main(int argc, char **argv)
     gticks2 = SDL_GetTicks();
     while(!quit) {
         while(SDL_PollEvent(&windowEvent)) {
-            if ( windowEvent.type == SDL_QUIT ) quit = true;
-            if ( windowEvent.type == SDL_KEYUP && windowEvent.key.keysym.sym == SDLK_ESCAPE ) quit = true;
+            SDL_Keysym keysym;
+            switch (windowEvent.type){
+            case SDL_QUIT:
+                quit = true;
+                break;
+            case SDL_KEYDOWN:
+                keysym = windowEvent.key.keysym;
+                switch (keysym.sym) {
+                case SDLK_ESCAPE:
+                    quit = true;
+                    break;
+                case SDLK_d:
+                    camera.MoveRight(1);
+                    break;
+                case SDLK_a:  
+                    camera.MoveLeft(1);
+                    break;
+                case SDLK_w:    
+                    camera.MoveForward(1);
+                    break;
+                case SDLK_s:    
+                    camera.MoveBackward(1);
+                    break;
+                case SDLK_q:    
+                    camera.MoveUp(1);
+                    break;
+                case SDLK_e:    
+                    camera.MoveDown(1);
+                    break;
+                }
+                break;
+            case SDL_KEYUP:
+                break;
+            case SDL_MOUSEMOTION:
+                //rotcam(event.motion.xrel,event.motion.yrel);
+                camera.RotateX(windowEvent.motion.xrel * (-1));
+                camera.RotateY(windowEvent.motion.yrel * (-1));
+                break;
+            }
         }
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(programID);
 
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
         glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
         // Camera matrix
-        glm::mat4 View       = glm::lookAt(
-                                           glm::vec3(-4,3,3), // Camera is at (4,3,3), in World Space
-                                           glm::vec3(0,0,0), // and looks at the origin
-                                           glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
-                                           );
+        glm::mat4 View       = camera.GetViewMatrix();
         // Model matrix : an identity matrix (model will be at the origin)
         glm::mat4 Model      = glm::mat4(1.0f);  // Changes for each model !
 
