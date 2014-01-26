@@ -8,79 +8,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+
+#include "Camera.hpp"
+#include "Cube.hpp"
+
 using namespace glm;
-
-class Camera
-{
-private:
-    
-    glm::vec3 position;
-    glm::vec3 direction;
-    glm::vec3 up;
-
-public:
-    Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
-    glm::mat4 GetViewMatrix();
-    void MoveForward(float distance);
-    void MoveBackward(float distance);
-    void MoveLeft(float distance);
-    void MoveRight(float distance);
-    void MoveUp(float distance);
-    void MoveDown(float distance);
-    void RotateX(float angle);
-    void RotateY(float angle);
-};
-
-Camera::Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
-{
-    this->position = position;
-    this->direction = glm::normalize(direction);
-    this->up = glm::normalize(up);
-}
-glm::mat4 Camera::GetViewMatrix()
-{
-    return glm::lookAt( position, position + direction, up );
-}
-
-void Camera::MoveForward(float distance)
-{
-    position = position + (direction * distance);
-}
-
-void Camera::MoveBackward(float distance)
-{
-    position = position + (direction * (distance * (-1)));
-}
-
-void Camera::MoveRight(float distance)
-{
-    position = position + cross(direction, up) * distance; 
-}
-void Camera::MoveLeft(float distance)
-{
-    position = position + cross(up, direction) * distance;     
-}
-void Camera::MoveUp(float distance)
-{
-    position = position + (up * distance);
-}
-
-void Camera::MoveDown(float distance)
-{
-    position = position + (up * (distance * (-1)));
-}
-
-void Camera::RotateX(float angle)
-{
-    direction = glm::rotate(direction, angle, up);
-}
-
-void Camera::RotateY(float angle)
-{
-    glm::vec3 aux = cross(direction,up);
-    direction = glm::rotate(direction, angle, aux);
-    up = glm::rotate(up, angle, aux);    
-}
 
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path)
@@ -216,109 +148,9 @@ int main(int argc, char **argv)
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 
-    static const GLfloat g_vertex_buffer_data[] = {
-        1.0f, 1.0f,-1.0f,
-        1.0f,-1.0f,-1.0f,
-        -1.0f,-1.0f,-1.0f,
-        
-        1.0f, 1.0f,-1.0f, 
-        -1.0f,-1.0f,-1.0f,
-        -1.0f, 1.0f,-1.0f,
-        
-        -1.0f,-1.0f,-1.0f,
-        -1.0f,-1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,
-        
-        -1.0f,-1.0f,-1.0f,
-        -1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f,-1.0f,
-        
-        1.0f,-1.0f, 1.0f,
-        -1.0f,-1.0f,-1.0f,
-        1.0f,-1.0f,-1.0f,
-        
-        1.0f,-1.0f, 1.0f,
-        -1.0f,-1.0f, 1.0f,
-        -1.0f,-1.0f,-1.0f,
-
-        1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f,-1.0f,
-        -1.0f, 1.0f, 1.0f,
-        
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f,-1.0f,
-        -1.0f, 1.0f,-1.0f,
-        
-        1.0f, 1.0f, 1.0f,
-        1.0f,-1.0f,-1.0f,
-        1.0f, 1.0f,-1.0f,
-        
-        1.0f,-1.0f,-1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f,-1.0f, 1.0f,
-        
-        -1.0f, 1.0f, 1.0f,
-        -1.0f,-1.0f, 1.0f,
-        1.0f,-1.0f, 1.0f,
-        
-        1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,
-        1.0f,-1.0f, 1.0f
-    };
-
-    static const GLfloat g_color_buffer_data[] = {
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 1.0f,
-        0.0f, 1.0f, 1.0f,
-        0.0f, 1.0f, 1.0f,
-        0.0f, 1.0f, 1.0f,
-        0.0f, 1.0f, 1.0f,
-        0.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f
-    };
-
-    // This will identify our vertex buffer
-    GLuint vertexbuffer;
-
-    // Generate 1 buffer, put the resulting identifier in vertexbuffer
-    glGenBuffers(1, &vertexbuffer);
-    // The following commands will talk about our 'vertexbuffer' buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    // Give our vertices to OpenGL.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-
-    GLuint colorbuffer;
-    glGenBuffers(1, &colorbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
+    Cube cube1(1,glm::vec3(0,0,0));
+    Cube cube2(1,glm::vec3(0,2,2));
+    Cube cube3(5,glm::vec3(10,0,0));
 
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders( "shaders/simple.vert", "shaders/simple.frag" );
@@ -383,54 +215,10 @@ int main(int argc, char **argv)
         glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
         // Camera matrix
         glm::mat4 View       = camera.GetViewMatrix();
-        // Model matrix : an identity matrix (model will be at the origin)
-        glm::mat4 Model      = glm::mat4(1.0f);  // Changes for each model !
 
-        glm::vec3 myRotationAxis( 0, 1, 0);
-        Model = glm::rotate( Model, angle, myRotationAxis );
-
-        // Our ModelViewProjection : multiplication of our 3 matrices
-        glm::mat4 MVP        = Projection * View * Model; // Remember, matrix multiplication is the other way around
-
-
-        // Get a handle for our "MVP" uniform.
-        // Only at initialisation time.
-        GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-
-        // Send our transformation to the currently bound shader,
-        // in the "MVP" uniform
-        // For each model you render, since the MVP will be different (at least the M part)
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-
-        // 1rst attribute buffer : vertices
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glVertexAttribPointer(
-                              0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-                              3,                  // size
-                              GL_FLOAT,           // type
-                              GL_FALSE,           // normalized?
-                              0,                  // stride
-                              (void*)0            // array buffer offset
-                              );
-        
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-        glVertexAttribPointer(
-                              1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-                              3,                                // size
-                              GL_FLOAT,                         // type
-                              GL_FALSE,                         // normalized?
-                              0,                                // stride
-                              (void*)0                          // array buffer offset
-                              );
-
-        // Draw the triangle !
-        glDrawArrays(GL_TRIANGLES, 0, 3*12); // Starting from vertex 0; 3 vertices total -> 1 triangle
-
-        glDisableVertexAttribArray(0);
-
+        cube1.Draw(programID, Projection, View, 0);
+        cube2.Draw(programID, Projection, View, angle);
+        cube3.Draw(programID, Projection, View, angle);
 
 
         SDL_GL_SwapWindow(window);
