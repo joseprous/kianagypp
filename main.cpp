@@ -148,20 +148,25 @@ int main(int argc, char **argv)
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 
-    Cube cube1(1,glm::vec3(0,0,0));
-    Cube cube2(1,glm::vec3(0,2,2));
-    Cube cube3(5,glm::vec3(10,0,0));
-
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders( "shaders/simple.vert", "shaders/simple.frag" );
 
 
+    Cube cube1(programID, 1, glm::vec3(0,0,0));
+    Cube cube2(programID, 1, glm::vec3(0,2,2));
+    Cube cube3(programID, 5, glm::vec3(10,0,0));
+
+    cube2.name = "cube2";
+
+//    cube1.RotateX(45);
+    //cube2.RotateY(90);
+    cube3.RotateX(90);
+    
     Camera camera(glm::vec3(-5,0,0), glm::vec3(1,0,0),glm::vec3(0,1,0));
     
     SDL_Event windowEvent;
     Uint32 gticks2;
     bool quit;
-    float angle = 0;
     gticks2 = SDL_GetTicks();
     while(!quit) {
         while(SDL_PollEvent(&windowEvent)) {
@@ -194,14 +199,44 @@ int main(int argc, char **argv)
                 case SDLK_e:    
                     camera.MoveDown(1);
                     break;
+                case SDLK_z:    
+                    cube2.RotateXQ(-10);
+                    break;
+                case SDLK_x:    
+                    cube2.RotateXQ(10);
+                    break;
+                case SDLK_c:    
+                    cube2.RotateYQ(-10);
+                    break;
+                case SDLK_v:    
+                    cube2.RotateYQ(10);
+                    break;
+                case SDLK_LEFT:
+                    camera.RotateX(-10);
+                    break;
+                case SDLK_RIGHT:
+                    camera.RotateX(10);                    
+                    break;
+                case SDLK_UP:
+                    break;
+                case SDLK_DOWN:
+                    break;
                 }
                 break;
             case SDL_KEYUP:
                 break;
             case SDL_MOUSEMOTION:
-                //rotcam(event.motion.xrel,event.motion.yrel);
-                camera.RotateX(windowEvent.motion.xrel * (-1));
-                camera.RotateY(windowEvent.motion.yrel * (-1));
+                //std::cout << "xrel:" << windowEvent.motion.xrel << std::endl;
+                //std::cout << "yrel:" << windowEvent.motion.yrel << std::endl;
+
+                float angleX = windowEvent.motion.xrel * (-1);
+                float angleY = windowEvent.motion.yrel * (-1);
+                //std::cout << "angleX:" << angleX << std::endl;
+                //std::cout << "angleY:" << angleY << std::endl;
+                //std::cout << std::endl;
+                
+                camera.RotateX(angleX);
+                camera.RotateY(angleY);
                 break;
             }
         }
@@ -216,14 +251,15 @@ int main(int argc, char **argv)
         // Camera matrix
         glm::mat4 View       = camera.GetViewMatrix();
 
-        cube1.Draw(programID, Projection, View, 0);
-        cube2.Draw(programID, Projection, View, angle);
-        cube3.Draw(programID, Projection, View, angle);
+        cube1.Draw(Projection, View);
+        cube2.Draw(Projection, View);
+        cube3.Draw(Projection, View);
 
 
         SDL_GL_SwapWindow(window);
         if(SDL_GetTicks()>gticks2+100){
-            angle = ((int)angle + 1) % 360;
+//            cube1.RotateXQ(45);
+//            cube2.RotateXQ(90);
             gticks2=SDL_GetTicks();
         }
     }

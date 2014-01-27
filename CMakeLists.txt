@@ -10,7 +10,7 @@ include(FindPkgConfig)
 pkg_search_module(SDL2 REQUIRED sdl2)
 include_directories(${SDL2_INCLUDE_DIRS})
 
-add_executable(kianagy++ main.cpp Camera.cpp Cube.cpp)
+add_executable(kianagy++ main.cpp Camera.cpp Cube.cpp Entity.cpp)
 
 target_link_libraries(kianagy++ ${SDL2_LIBRARIES} GLEW)
 

@@ -1,12 +1,14 @@
 #ifndef CUBE_HPP
 #define CUBE_HPP
 
+#include "Entity.hpp"
+
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/transform.hpp>
-class Cube
+class Cube : public Entity
 {
 private:
 
@@ -36,7 +38,7 @@ private:
         1.0f,-1.0f, 1.0f,
         -1.0f,-1.0f, 1.0f,
         -1.0f,-1.0f,-1.0f,
-
+        
         1.0f, 1.0f, 1.0f,
         -1.0f, 1.0f,-1.0f,
         -1.0f, 1.0f, 1.0f,
@@ -103,11 +105,13 @@ private:
 
     GLuint vertexbuffer;
     GLuint colorbuffer;
-    glm::vec3 position;
     float size;
+    GLuint programID;
+    
 public:
-    Cube(float size, glm::vec3 position);
-    void Draw(GLuint programID, glm::mat4 projection, glm::mat4 view, float angle);
+    
+    Cube(GLuint programID, float size, glm::vec3 position);
+    void Draw(glm::mat4 projection, glm::mat4 view);
 };
 
 #endif

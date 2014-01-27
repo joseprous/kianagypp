@@ -1,9 +1,12 @@
+#include <iostream>
+
 #include "Cube.hpp"
 
-Cube::Cube(float size, glm::vec3 position)
+Cube::Cube(GLuint programID, float size, glm::vec3 position)
+    : Entity(position, glm::vec3(0,0,1), glm::vec3(0,1,0))
 {
-    this->position = position;
     this->size = size;
+    this->programID = programID;
     
     glGenBuffers(1, &vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -15,13 +18,35 @@ Cube::Cube(float size, glm::vec3 position)
 
 }
 
-void Cube::Draw(GLuint programID, glm::mat4 projection, glm::mat4 view, float angle)
+void printMat(glm::mat4  mat){
+    int i,j;
+    for (j=0; j<4; j++){
+        for (i=0; i<4; i++){
+            std::cout << mat[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void printVec3(std::string name, glm::vec3 v);
+
+
+void Cube::Draw(glm::mat4 projection, glm::mat4 view)
 {
     // Model matrix : an identity matrix (model will be at the origin)
     glm::mat4 Model      = glm::mat4(1.0f);  // Changes for each model !
 
-    glm::vec3 myRotationAxis( 0, 1, 0);
-    Model = glm::translate(this->position) * glm::rotate(angle, myRotationAxis) * glm::scale( glm::vec3(size,size,size) ) * Model;
+    glm::mat4 translate = glm::translate(this->position);
+    glm::mat4 orientation =  glm::toMat4(quaternion);
+    glm::mat4 scale = glm::scale( glm::vec3(size,size,size) );
+    Model = translate * orientation * scale * Model;
+
+/*    if(!this->name.compare("cube2")){
+        printVec3("direction",direction);
+        printVec3("up",up);
+        printMat(orientation);
+        }*/
 //    Model = glm::translate(Model, this->position);
 //    Model = glm::rotate( Model, angle, myRotationAxis );
     
