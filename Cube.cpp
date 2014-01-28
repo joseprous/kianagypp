@@ -3,7 +3,8 @@
 #include "Cube.hpp"
 
 Cube::Cube(GLuint programID, float size, glm::vec3 position)
-    : Entity(position, glm::vec3(0,0,1), glm::vec3(0,1,0))
+    : Entity(position, glm::vec3(0,0,1), glm::vec3(0,1,0)),
+      axis(programID,2)
 {
     this->size = size;
     this->programID = programID;
@@ -63,6 +64,7 @@ void Cube::Draw(glm::mat4 projection, glm::mat4 view)
     // For each model you render, since the MVP will be different (at least the M part)
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // 1rst attribute buffer : vertices
     glEnableVertexAttribArray(0);
@@ -92,4 +94,6 @@ void Cube::Draw(glm::mat4 projection, glm::mat4 view)
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+
+    axis.Draw(projection,view,translate,orientation);
 }

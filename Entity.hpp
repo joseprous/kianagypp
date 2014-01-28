@@ -21,15 +21,15 @@ public:
 
     Entity(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
 
-    void MoveForward(float distance);
-    void MoveBackward(float distance);
-    void MoveLeft(float distance);
-    void MoveRight(float distance);
-    void MoveUp(float distance);
-    void MoveDown(float distance);
-    void RotateXQ(float angle);
-    void RotateYQ(float angle);
-    void RotateX(float angle);
-    void RotateY(float angle);
+    virtual void MoveForward(float distance);
+    virtual void MoveBackward(float distance);
+    virtual void MoveLeft(float distance);
+    virtual void MoveRight(float distance);
+    virtual void MoveUp(float distance);
+    virtual void MoveDown(float distance);
+    virtual void RotateX(float angle);
+    virtual void RotateY(float angle);
+    virtual void Move(glm::vec3 dir, float distance);
+
 };
 #endif

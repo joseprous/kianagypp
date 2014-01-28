@@ -155,7 +155,7 @@ int main(int argc, char **argv)
     Cube cube1(programID, 1, glm::vec3(0,0,0));
     Cube cube2(programID, 1, glm::vec3(0,2,2));
     Cube cube3(programID, 5, glm::vec3(10,0,0));
-
+    
     cube2.name = "cube2";
 
 //    cube1.RotateX(45);
@@ -166,7 +166,7 @@ int main(int argc, char **argv)
     
     SDL_Event windowEvent;
     Uint32 gticks2;
-    bool quit;
+    bool quit = false;
     gticks2 = SDL_GetTicks();
     while(!quit) {
         while(SDL_PollEvent(&windowEvent)) {
@@ -200,16 +200,28 @@ int main(int argc, char **argv)
                     camera.MoveDown(1);
                     break;
                 case SDLK_z:    
-                    cube2.RotateXQ(-10);
+                    cube2.RotateX(-10);
                     break;
                 case SDLK_x:    
-                    cube2.RotateXQ(10);
+                    cube2.RotateX(10);
                     break;
                 case SDLK_c:    
-                    cube2.RotateYQ(-10);
+                    cube2.RotateY(-10);
                     break;
                 case SDLK_v:    
-                    cube2.RotateYQ(10);
+                    cube2.RotateY(10);
+                    break;
+                case SDLK_l:
+                    cube2.MoveRight(1);
+                    break;
+                case SDLK_h:  
+                    cube2.MoveLeft(1);
+                    break;
+                case SDLK_k:    
+                    cube2.MoveForward(1);
+                    break;
+                case SDLK_j:    
+                    cube2.MoveBackward(1);
                     break;
                 case SDLK_LEFT:
                     camera.RotateX(-10);
@@ -244,7 +256,7 @@ int main(int argc, char **argv)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(programID);
 
-//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
         glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
@@ -255,10 +267,9 @@ int main(int argc, char **argv)
         cube2.Draw(Projection, View);
         cube3.Draw(Projection, View);
 
-
         SDL_GL_SwapWindow(window);
         if(SDL_GetTicks()>gticks2+100){
-//            cube1.RotateXQ(45);
+            cube1.RotateX(1);
 //            cube2.RotateXQ(90);
             gticks2=SDL_GetTicks();
         }

@@ -14,3 +14,14 @@ glm::mat4 Camera::GetViewMatrix()
     return glm::lookAt( position, position + direction, up );
 }
 
+void Camera::RotateX(float angle)
+{
+    direction = glm::rotate(direction, angle, up);
+}
+
+void Camera::RotateY(float angle)
+{
+    glm::vec3 aux = cross(direction, up);
+    direction = glm::rotate(direction, angle, aux);
+    up = glm::rotate(up, angle, aux);
+}
