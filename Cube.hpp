@@ -64,7 +64,7 @@ private:
         -1.0f, 1.0f, 1.0f,
         1.0f,-1.0f, 1.0f
     };
-/*
+
     GLfloat g_color_buffer_data[3*3*6*2] = {
         1.0f, 0.0f, 0.0f,
         1.0f, 0.0f, 0.0f,
@@ -103,8 +103,8 @@ private:
         0.0f, 0.0f, 1.0f,
         0.0f, 0.0f, 1.0f
     };
-*/
-    GLfloat g_color_buffer_data[3*3*6*2] = {
+
+/*    GLfloat g_color_buffer_data[3*3*6*2] = {
         1.0f, 1.0f, 1.0f,
         1.0f, 1.0f, 1.0f,
         1.0f, 1.0f, 1.0f,
@@ -142,7 +142,7 @@ private:
         1.0f, 1.0f, 1.0f,
         1.0f, 1.0f, 1.0f 
     };
-
+*/
     
     GLuint vertexbuffer;
     GLuint colorbuffer;

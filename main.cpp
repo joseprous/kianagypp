@@ -15,11 +15,12 @@
 using namespace glm;
 
 
-GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path)
+GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path,const char * geometry_file_path)
 {
     // Create the shaders
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
     GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint GeometryShaderID = glCreateShader(GL_GEOMETRY_SHADER);
 
     // Read the Vertex Shader code from the file
     std::string VertexShaderCode;
@@ -41,6 +42,16 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
             FragmentShaderCode += "\n" + Line;
         FragmentShaderStream.close();
     }
+
+    std::string GeometryShaderCode;
+    std::ifstream GeometryShaderStream(geometry_file_path, std::ios::in);
+    if(GeometryShaderStream.is_open()){
+        std::string Line = "";
+        while(getline(GeometryShaderStream, Line))
+            GeometryShaderCode += "\n" + Line;
+        GeometryShaderStream.close();
+    }
+    
 
     GLint Result = GL_FALSE;
     int InfoLogLength;
@@ -71,11 +82,25 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
     glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
     fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
 
+    // Compile Geometry Shader
+    printf("Compiling shader : %s\n", fragment_file_path);
+    char const * GeometrySourcePointer = GeometryShaderCode.c_str();
+    glShaderSource(GeometryShaderID, 1, &GeometrySourcePointer , NULL);
+    glCompileShader(GeometryShaderID);
+
+    // Check Geometry Shader
+    glGetShaderiv(GeometryShaderID, GL_COMPILE_STATUS, &Result);
+    glGetShaderiv(GeometryShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+    std::vector<char> GeometryShaderErrorMessage(InfoLogLength);
+    glGetShaderInfoLog(GeometryShaderID, InfoLogLength, NULL, &GeometryShaderErrorMessage[0]);
+    fprintf(stdout, "%s\n", &GeometryShaderErrorMessage[0]);
+    
     // Link the program
     fprintf(stdout, "Linking program\n");
     GLuint ProgramID = glCreateProgram();
     glAttachShader(ProgramID, VertexShaderID);
     glAttachShader(ProgramID, FragmentShaderID);
+    glAttachShader(ProgramID, GeometryShaderID);
     glLinkProgram(ProgramID);
 
     // Check the program
@@ -87,6 +112,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 
     glDeleteShader(VertexShaderID);
     glDeleteShader(FragmentShaderID);
+    glDeleteShader(GeometryShaderID);
 
     return ProgramID;
 }
@@ -149,9 +175,14 @@ int main(int argc, char **argv)
     glBindVertexArray(VertexArrayID);
 
     // Create and compile our GLSL program from the shaders
-    GLuint programID = LoadShaders( "shaders/simple.vert", "shaders/simple.frag" );
+    GLuint programID = LoadShaders( "shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom" );
 
+/*    GLuint WinScaleID = glGetUniformLocation(programID, "WIN_SCALE");
 
+    int w,h;
+    SDL_GetWindowSize(window,&w,&h);
+    glUniform2f(WinScaleID, w,h);
+*/
     Cube cube1(programID, 1, glm::vec3(0,0,0));
     Cube cube2(programID, 1, glm::vec3(0,2,2));
     Cube cube3(programID, 5, glm::vec3(10,0,0));
@@ -252,11 +283,11 @@ int main(int argc, char **argv)
                 break;
             }
         }
-
+        glClearColor(1.0f,1.0f,1.0f,1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(programID);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
         glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
