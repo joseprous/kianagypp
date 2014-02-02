@@ -177,12 +177,6 @@ int main(int argc, char **argv)
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders( "shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom" );
 
-/*    GLuint WinScaleID = glGetUniformLocation(programID, "WIN_SCALE");
-
-    int w,h;
-    SDL_GetWindowSize(window,&w,&h);
-    glUniform2f(WinScaleID, w,h);
-*/
     Cube cube1(programID, 1, glm::vec3(0,0,0));
     Cube cube2(programID, 1, glm::vec3(0,2,2));
     Cube cube3(programID, 5, glm::vec3(10,0,0));
@@ -283,7 +277,7 @@ int main(int argc, char **argv)
                 break;
             }
         }
-        glClearColor(1.0f,1.0f,1.0f,1.0f);
+        glClearColor(0.8f,0.8f,0.8f,0.8f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(programID);
 

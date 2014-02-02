@@ -1,5 +1,4 @@
-#version 430
-//#extension GL_EXT_gpu_shader4 : enable
+#version 430 core
 
 in vec3 fragmentColorV[];
 out vec3 fragmentColor;
