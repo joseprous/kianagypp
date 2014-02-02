@@ -11,7 +11,8 @@
 
 #include "Camera.hpp"
 #include "Cube.hpp"
-
+#include "Map.hpp"
+#include "Map_Driver.hpp"
 using namespace glm;
 
 
@@ -159,6 +160,20 @@ SDL_Window* init_sdl()
     return window;
 }
 
+Map load_map(int argc, char **argv)
+{
+    Map_Driver driver;
+    for (int i = 1; i < argc; ++i){
+        if (argv[i] == std::string ("-p"))
+            driver.trace_parsing = true;
+        else if (argv[i] == std::string ("-s"))
+            driver.trace_scanning = true;
+        else
+            driver.parse (argv[i]);                
+    }
+    return driver.map;
+}
+
 int main(int argc, char **argv)
 {
     SDL_Window* window;
@@ -174,6 +189,11 @@ int main(int argc, char **argv)
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 
+
+    Map map = load_map(argc,argv);
+
+    map.entities[0].load_brushes();
+    
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders( "shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom" );
 
