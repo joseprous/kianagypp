@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(kianagy++)
 
 SET (CMAKE_CXX_COMPILER           "/usr/bin/clang++")
-SET (CMAKE_CXX_FLAGS              "-Werror -Wall -Wno-deprecated-register -std=c++11 -g")
+SET (CMAKE_CXX_FLAGS              "-fno-omit-frame-pointer -Werror -Wall -Wno-deprecated-register -std=c++11 -g")
 
 find_package(GLEW REQUIRED)
 

@@ -44,8 +44,8 @@
   LBRACE  "{"
   RBRACE  "}"
 ;
-%token <float> NUMBER "number"
-%token <float> FNUMBER "fnumber"
+%token <double> NUMBER "number"
+%token <double> FNUMBER "fnumber"
 %token <std::string> TEXTURE "texture"
 %token <std::string> STRINGL "stringl"
 
@@ -57,8 +57,8 @@
 %type <std::vector<header> > headers
 %type <std::vector<rawbrush> > brushes 
 %type <std::vector<rawplane> > planes 
-%type <glm::vec3> point
-%type <std::vector<float> > numlist
+%type <glm::dvec3> point
+%type <std::vector<double> > numlist
 
 %printer {  } <*>;
 %%

@@ -4,14 +4,15 @@
 #include <vector>
 #include <string>
 #include <glm/glm.hpp>
+#include <GL/glew.h>
 
 struct rawplane
 {
-    glm::vec3 point0;
-    glm::vec3 point1;
-    glm::vec3 point2;
+    glm::dvec3 point0;
+    glm::dvec3 point1;
+    glm::dvec3 point2;
     std::string texture_name;
-    std::vector<float> texture_data;
+    std::vector<double> texture_data;
 };
 
 struct rawbrush
@@ -21,11 +22,18 @@ struct rawbrush
 
 struct poly
 {
-    std::vector<glm::vec3> vertexes;
-    glm::vec3 normal;
+    std::vector<glm::dvec3> vertexes;
+    std::vector<GLfloat> vertex_buffer_data;
+    std::vector<GLfloat> color_buffer_data;
+//    GLfloat vertex_buffer_data[3*4];//={1, 0.999999, 1, -1, 1, 1, -1, -1, 1, 0.999999, -1, 1};
+//    GLfloat color_buffer_data[3*4];//={1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0};
+
+    glm::dvec3 normal;
     std::string tex;
-    glm::vec3 center;
+    glm::dvec3 center;
     int num;
+    GLuint vertexbuffer;
+    GLuint colorbuffer;
 };
 
 struct brush
@@ -60,14 +68,14 @@ public:
 };
 
 struct line{
-    glm::vec3 dir;
-    glm::vec3 point;
+    glm::dvec3 dir;
+    glm::dvec3 point;
 };
 
 //ax+by+cz+d=0
 struct plane{
-	float a,b,c,d;
-	glm::vec3 normal;
+	double a,b,c,d;
+	glm::dvec3 normal;
 };
 
 #endif

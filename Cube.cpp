@@ -96,6 +96,7 @@ void Cube::Draw(glm::mat4 projection, glm::mat4 view)
         );
 
     // Draw the triangle !
+//    glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
     glDrawArrays(GL_TRIANGLES, 0, 3*12); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
     glDisableVertexAttribArray(0);

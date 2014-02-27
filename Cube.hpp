@@ -13,8 +13,9 @@ class Cube : public Entity
 {
 private:
 
-//    GLfloat g_vertex_buffer_data[3*3*6*2];
-//    GLfloat g_color_buffer_data[3*3*6*2];
+//    GLfloat g_vertex_buffer_data[3*4]={1, 0.999999, 1, -1, 1, 1, -1, -1, 1, 0.999999, -1, 1};
+//    GLfloat g_color_buffer_data[3*4]={1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0};
+    
     GLfloat g_vertex_buffer_data[3*3*6*2] = {
         1.0f, 1.0f,-1.0f,
         1.0f,-1.0f,-1.0f,
@@ -103,47 +104,7 @@ private:
         0.0f, 0.0f, 1.0f,
         0.0f, 0.0f, 1.0f
     };
-
-/*    GLfloat g_color_buffer_data[3*3*6*2] = {
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f 
-    };
-*/
-    
+  
     GLuint vertexbuffer;
     GLuint colorbuffer;
     float size;

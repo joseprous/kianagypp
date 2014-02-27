@@ -174,8 +174,63 @@ Map load_map(int argc, char **argv)
     return driver.map;
 }
 
+void draw_map(Map &map, GLuint programID, glm::mat4 projection, glm::mat4 view)
+{
+    glm::mat4 Model      = glm::mat4(1.0f);  // Changes for each model !
+
+    glm::mat4 MVP        = projection * view * Model; // Remember, matrix multiplication is the other way around
+
+
+    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+
+    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+
+    GLuint WinScaleID = glGetUniformLocation(programID, "WIN_SCALE");
+
+    glUniform2f(WinScaleID, 640, 480);
+
+    for(brush b : map.entities[0].brushes){
+        for(poly p : b.polys){
+//    poly p=map.entities[0].brushes[0].polys[0];
+            glEnableVertexAttribArray(0);
+            glBindBuffer(GL_ARRAY_BUFFER, p.vertexbuffer);
+            glVertexAttribPointer(
+                0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+                3,                  // size
+                GL_FLOAT,           // type
+                GL_FALSE,           // normalized?
+                0,                  // stride
+                (void*)0            // array buffer offset
+                );
+
+
+            glEnableVertexAttribArray(1);
+            glBindBuffer(GL_ARRAY_BUFFER, p.colorbuffer);
+            glVertexAttribPointer(
+                1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+                3,                                // size
+                GL_FLOAT,                         // type
+                GL_FALSE,                         // normalized?
+                0,                                // stride
+                (void*)0                          // array buffer offset
+                );
+            
+            glDrawArrays(GL_TRIANGLE_FAN, 0, p.num);
+            
+            glDisableVertexAttribArray(0);
+            glDisableVertexAttribArray(1);
+                  }
+    }
+}
+
 int main(int argc, char **argv)
 {
+    if(argc != 2){
+        std::cout << "Usage: " << argv[0] << " map" << std::endl;
+        return -1;
+    }
+
     SDL_Window* window;
     
     window = init_sdl();
@@ -188,7 +243,6 @@ int main(int argc, char **argv)
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
-
 
     Map map = load_map(argc,argv);
 
@@ -207,7 +261,7 @@ int main(int argc, char **argv)
     //cube2.RotateY(90);
     cube3.RotateX(90);
     
-    Camera camera(glm::vec3(-5,0,0), glm::vec3(1,0,0),glm::vec3(0,1,0));
+    Camera camera(glm::vec3(1432,1232,240), glm::vec3(1,0,0),glm::vec3(0,0,1));
     
     SDL_Event windowEvent;
     Uint32 gticks2;
@@ -227,16 +281,16 @@ int main(int argc, char **argv)
                     quit = true;
                     break;
                 case SDLK_d:
-                    camera.MoveRight(1);
+                    camera.MoveRight(10);
                     break;
                 case SDLK_a:  
-                    camera.MoveLeft(1);
+                    camera.MoveLeft(10);
                     break;
                 case SDLK_w:    
-                    camera.MoveForward(1);
+                    camera.MoveForward(10);
                     break;
                 case SDLK_s:    
-                    camera.MoveBackward(1);
+                    camera.MoveBackward(10);
                     break;
                 case SDLK_q:    
                     camera.MoveUp(1);
@@ -297,20 +351,22 @@ int main(int argc, char **argv)
                 break;
             }
         }
-        glClearColor(0.8f,0.8f,0.8f,0.8f);
+        glClearColor(0.0f,0.0f,0.5f,1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(programID);
 
         //  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-        glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+        glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
         // Camera matrix
         glm::mat4 View       = camera.GetViewMatrix();
 
-        cube1.Draw(Projection, View);
-        cube2.Draw(Projection, View);
-        cube3.Draw(Projection, View);
+        //cube1.Draw(Projection, View);
+        //cube2.Draw(Projection, View);
+        //cube3.Draw(Projection, View);
+
+        draw_map(map,programID,Projection, View);
 
         SDL_GL_SwapWindow(window);
         if(SDL_GetTicks()>gticks2+100){
