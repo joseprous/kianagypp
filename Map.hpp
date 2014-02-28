@@ -23,22 +23,22 @@ struct rawbrush
 struct poly
 {
     std::vector<glm::dvec3> vertexes;
-    std::vector<GLfloat> vertex_buffer_data;
-    std::vector<GLfloat> color_buffer_data;
-//    GLfloat vertex_buffer_data[3*4];//={1, 0.999999, 1, -1, 1, 1, -1, -1, 1, 0.999999, -1, 1};
-//    GLfloat color_buffer_data[3*4];//={1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0};
 
     glm::dvec3 normal;
     std::string tex;
     glm::dvec3 center;
     int num;
-    GLuint vertexbuffer;
-    GLuint colorbuffer;
 };
 
 struct brush
 {
     std::vector<poly> polys;
+    std::vector<GLfloat> vertex_buffer_data;
+    std::vector<GLfloat> color_buffer_data;
+    std::vector<GLuint> element_buffer_data;    
+    GLuint vertexbuffer;
+    GLuint colorbuffer;
+    GLuint elementbuffer;
 };
 
 struct header

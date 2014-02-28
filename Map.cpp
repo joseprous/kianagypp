@@ -69,20 +69,6 @@ int inter2planes(plane p1, plane p2, line *l1)
     return 1;
 }
 
-/*int interlineplane(struct line line1,struct plane plane1, glm::dvec3 &point)
-{
-    glm::dvec3 p1,p2;
-    double u,d;
-	p1 = line1.point;
-	p2 = line1.point + line1.dir;
-	d = plane1.a*(p1.x-p2.x)+plane1.b*(p1.y-p2.y)+plane1.c*(p1.z-p2.z);
-	if(d < -0.01 || d > 0.01){
-		u=(plane1.a*p1.x+plane1.b*p1.y+plane1.c*p1.z+plane1.d)/d;
-		point = p1 * (u * (p2 - p1));
-		return 1;
-	}
-	return 0;
-}*/
 double dabs(double n)
 {
     if(n<0) return n*(-1);
@@ -90,18 +76,12 @@ double dabs(double n)
 }
     
 int interlineplane(struct line line1,struct plane plane1, glm::dvec3 &point)
-{
-    //print_vec3("line1.dir",line1.dir);
-    //print_vec3("plane1.normal",plane1.normal);
-   
+{  
     // Check for (near) parallel line and plane
     double denominator = glm::dot(line1.dir, plane1.normal);
-    //std::cout << "denominator: " << denominator << std::endl;    
     if (dabs(denominator) == 0) {
-        //std::cout << "no intersection" << std::endl;
         return 0;
     }
-    //std::cout << "intersection" << std::endl;
 
 // Nonparallel, so compute intersection
     double t = -(plane1.a * line1.point.x + plane1.b * line1.point.y + plane1.c * line1.point.z + plane1.d);
@@ -125,7 +105,6 @@ int pointinplane(glm::dvec3 point,struct plane p)
 			return 1;			
 		}
 	}
-	//printf("res:%lf\n",res);		
 }
 
 int comppoints(glm::dvec3 p1, glm::dvec3 p2){
@@ -207,12 +186,7 @@ brush load_brush(rawbrush b)
     
 	/**********Ini crear planos ***********/
 	for(i=0;i<num;i++){
-/*        print_vec3("point0",b.rawplanes[i].point0);
-        print_vec3("point1",b.rawplanes[i].point1);
-        print_vec3("point2",b.rawplanes[i].point2);*/
 		planes[i]=plane3points(b.rawplanes[i].point0, b.rawplanes[i].point1, b.rawplanes[i].point2);
-        //std::cout << "plane: " << planes[i].a << "x + " << planes[i].b << "y + " << planes[i].c << "z + " << planes[i].d << " = 0 ";
-        //print_vec3("normal",planes[i].normal);
         
 		aux.polys[i].normal=planes[i].normal;
 		aux.polys[i].tex=b.rawplanes[i].texture_name;
@@ -220,40 +194,25 @@ brush load_brush(rawbrush b)
 		aux.polys[i].num=0;
 	}
 	/**********Fin crear planos ***********/
-
-    //std::cout << std::endl;
-    //std::cout << std::endl;
     
 	/**********Ini crear vertices ***********/	
 	for(i=0;i<num;i++){
 		for(j=i+1;j<num;j++){
 			if(inter2planes(planes[i],planes[j],&lineaux)){
-                //print_vec3("line point",lineaux.point);
-                //print_vec3("line dir",lineaux.dir);
 
 				for(k=0;k<num;k++){
 					if(k!=i && k!=j){
 						if(interlineplane(lineaux,planes[k],pointaux)){
-                            //std::cout << "plane: " << planes[k].a << "x + " << planes[k].b << "y + " << planes[k].c << "z + " << planes[k].d << " = 0 ";
-                            //print_vec3("normal",planes[k].normal);
-
-                            
-                            //std::cout << "inter line plane: " << pointaux.x << "," << pointaux.y << "," << pointaux.z << std::endl;
-                            
 							aux.polys[k].vertexes[aux.polys[k].num]=pointaux;
 							aux.polys[k].num++;						
 						}
 					}	
 				}
-                //std::cout << std::endl;
-
 			}
 		}	
 	}
 	/**********Fin crear vertices ***********/
 
-    // std::cout << std::endl;
-	
 	/**********Ini recortar vertices ***********/
 	
 	for(i=0;i<num;i++){
@@ -292,46 +251,49 @@ brush load_brush(rawbrush b)
         ordervertexes(&(aux.polys[i]));
 	}
 
+    GLuint elem=0;
     for(i=0;i<num;i++){
-        //std::cout << "poly: " << i << std::endl;
-        for(j=0;j<aux.polys[i].num;j++){
-            glm::dvec3 v = aux.polys[i].vertexes[j];
-            //std::cout << "vertex: " << v.x << "," << v.y << "," << v.z << std::endl;
-            aux.polys[i].vertex_buffer_data.push_back(v.x);
-            aux.polys[i].vertex_buffer_data.push_back(v.y);
-            aux.polys[i].vertex_buffer_data.push_back(v.z);
+        glm::dvec3 v;
+        
+        for(j=2;j<aux.polys[i].num;j++){
+            v = aux.polys[i].vertexes[0];
+            aux.vertex_buffer_data.push_back(v.x);
+            aux.vertex_buffer_data.push_back(v.y);
+            aux.vertex_buffer_data.push_back(v.z);
+            aux.element_buffer_data.push_back(elem++);
 
-            aux.polys[i].color_buffer_data.push_back(1);
-            aux.polys[i].color_buffer_data.push_back(1);
-            aux.polys[i].color_buffer_data.push_back(1);
+            v = aux.polys[i].vertexes[j-1];
+            aux.vertex_buffer_data.push_back(v.x);
+            aux.vertex_buffer_data.push_back(v.y);
+            aux.vertex_buffer_data.push_back(v.z);
+            aux.element_buffer_data.push_back(elem++);
             
+            v = aux.polys[i].vertexes[j];
+            aux.vertex_buffer_data.push_back(v.x);
+            aux.vertex_buffer_data.push_back(v.y);
+            aux.vertex_buffer_data.push_back(v.z);
+            aux.element_buffer_data.push_back(elem++);
+
+            for(k=0;k<9;k++){
+                aux.color_buffer_data.push_back(1);
+            }
         }
         
-        /*std::cout << "vertex_buffer_data ";
-        for(GLfloat v : aux.polys[i].vertex_buffer_data){
-            std::cout << v << ", ";
-        }
-        std::cout << std::endl;
-        std::cout << "color_buffer_data ";
-        for(GLfloat v : aux.polys[i].color_buffer_data){
-            std::cout << v << ", ";
-        }
-        std::cout << std::endl;
-        */
-        GLfloat *vertex_buffer_datap = aux.polys[i].vertex_buffer_data.data();
-        GLfloat *color_buffer_datap = aux.polys[i].color_buffer_data.data();
+        GLfloat *vertex_buffer_datap = aux.vertex_buffer_data.data();
+        GLfloat *color_buffer_datap = aux.color_buffer_data.data();
+        GLuint *element_buffer_datap = aux.element_buffer_data.data();
             
-        glGenBuffers(1, &(aux.polys[i].vertexbuffer));
-        glBindBuffer(GL_ARRAY_BUFFER, aux.polys[i].vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*aux.polys[i].vertex_buffer_data.size(), vertex_buffer_datap, GL_STATIC_DRAW);
+        glGenBuffers(1, &(aux.vertexbuffer));
+        glBindBuffer(GL_ARRAY_BUFFER, aux.vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*aux.vertex_buffer_data.size(), vertex_buffer_datap, GL_STATIC_DRAW);
 
-        glGenBuffers(1, &(aux.polys[i].colorbuffer));
-        glBindBuffer(GL_ARRAY_BUFFER, aux.polys[i].colorbuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*aux.polys[i].color_buffer_data.size(), color_buffer_datap, GL_STATIC_DRAW);
-        /*std::cout << "vertex buffer: " << aux.polys[i].vertexbuffer << std::endl;
-        std::cout << "color buffer: " << aux.polys[i].colorbuffer << std::endl;
-        std::cout << std::endl;*/
+        glGenBuffers(1, &(aux.colorbuffer));
+        glBindBuffer(GL_ARRAY_BUFFER, aux.colorbuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*aux.color_buffer_data.size(), color_buffer_datap, GL_STATIC_DRAW);
         
+        glGenBuffers(1, &(aux.elementbuffer));
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, aux.elementbuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLfloat)*aux.element_buffer_data.size(), element_buffer_datap, GL_STATIC_DRAW);
     }
     
 	return aux;

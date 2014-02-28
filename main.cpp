@@ -191,10 +191,10 @@ void draw_map(Map &map, GLuint programID, glm::mat4 projection, glm::mat4 view)
     glUniform2f(WinScaleID, 640, 480);
 
     for(brush b : map.entities[0].brushes){
-        for(poly p : b.polys){
+        //for(poly p : b.polys){
 //    poly p=map.entities[0].brushes[0].polys[0];
             glEnableVertexAttribArray(0);
-            glBindBuffer(GL_ARRAY_BUFFER, p.vertexbuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, b.vertexbuffer);
             glVertexAttribPointer(
                 0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
                 3,                  // size
@@ -206,7 +206,7 @@ void draw_map(Map &map, GLuint programID, glm::mat4 projection, glm::mat4 view)
 
 
             glEnableVertexAttribArray(1);
-            glBindBuffer(GL_ARRAY_BUFFER, p.colorbuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, b.colorbuffer);
             glVertexAttribPointer(
                 1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
                 3,                                // size
@@ -215,12 +215,22 @@ void draw_map(Map &map, GLuint programID, glm::mat4 projection, glm::mat4 view)
                 0,                                // stride
                 (void*)0                          // array buffer offset
                 );
+            // Index buffer
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, b.elementbuffer);
+ 
+            // Draw the triangles !
+            glDrawElements(
+                GL_TRIANGLES,      // mode
+                b.element_buffer_data.size(),    // count
+                GL_UNSIGNED_INT,   // type
+                (void*)0           // element array buffer offset
+                );
             
-            glDrawArrays(GL_TRIANGLE_FAN, 0, p.num);
+            //glDrawArrays(GL_TRIANGLE_FAN, 0, p.num);
             
             glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
-                  }
+            //        }
     }
 }
 
@@ -262,6 +272,7 @@ int main(int argc, char **argv)
     cube3.RotateX(90);
     
     Camera camera(glm::vec3(1432,1232,240), glm::vec3(1,0,0),glm::vec3(0,0,1));
+    //Camera camera(glm::vec3(0,5,0), glm::vec3(1,0,0),glm::vec3(0,0,1));
     
     SDL_Event windowEvent;
     Uint32 gticks2;
