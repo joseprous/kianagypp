@@ -12,7 +12,6 @@
 #include "Camera.hpp"
 #include "Cube.hpp"
 #include "Map.hpp"
-#include "Map_Driver.hpp"
 using namespace glm;
 
 
@@ -160,80 +159,6 @@ SDL_Window* init_sdl()
     return window;
 }
 
-Map load_map(int argc, char **argv)
-{
-    Map_Driver driver;
-    for (int i = 1; i < argc; ++i){
-        if (argv[i] == std::string ("-p"))
-            driver.trace_parsing = true;
-        else if (argv[i] == std::string ("-s"))
-            driver.trace_scanning = true;
-        else
-            driver.parse (argv[i]);                
-    }
-    return driver.map;
-}
-
-void draw_map(Map &map, GLuint programID, glm::mat4 projection, glm::mat4 view)
-{
-    glm::mat4 Model      = glm::mat4(1.0f);  // Changes for each model !
-
-    glm::mat4 MVP        = projection * view * Model; // Remember, matrix multiplication is the other way around
-
-
-    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-
-    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-
-    GLuint WinScaleID = glGetUniformLocation(programID, "WIN_SCALE");
-
-    glUniform2f(WinScaleID, 640, 480);
-
-    for(brush b : map.entities[0].brushes){
-        //for(poly p : b.polys){
-//    poly p=map.entities[0].brushes[0].polys[0];
-            glEnableVertexAttribArray(0);
-            glBindBuffer(GL_ARRAY_BUFFER, b.vertexbuffer);
-            glVertexAttribPointer(
-                0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-                3,                  // size
-                GL_FLOAT,           // type
-                GL_FALSE,           // normalized?
-                0,                  // stride
-                (void*)0            // array buffer offset
-                );
-
-
-            glEnableVertexAttribArray(1);
-            glBindBuffer(GL_ARRAY_BUFFER, b.colorbuffer);
-            glVertexAttribPointer(
-                1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-                3,                                // size
-                GL_FLOAT,                         // type
-                GL_FALSE,                         // normalized?
-                0,                                // stride
-                (void*)0                          // array buffer offset
-                );
-            // Index buffer
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, b.elementbuffer);
- 
-            // Draw the triangles !
-            glDrawElements(
-                GL_TRIANGLES,      // mode
-                b.element_buffer_data.size(),    // count
-                GL_UNSIGNED_INT,   // type
-                (void*)0           // element array buffer offset
-                );
-            
-            //glDrawArrays(GL_TRIANGLE_FAN, 0, p.num);
-            
-            glDisableVertexAttribArray(0);
-            glDisableVertexAttribArray(1);
-            //        }
-    }
-}
-
 int main(int argc, char **argv)
 {
     if(argc != 2){
@@ -254,7 +179,7 @@ int main(int argc, char **argv)
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 
-    Map map = load_map(argc,argv);
+    Map map = load_map(argv[1]);
 
     map.entities[0].load_brushes();
     
@@ -304,10 +229,10 @@ int main(int argc, char **argv)
                     camera.MoveBackward(10);
                     break;
                 case SDLK_q:    
-                    camera.MoveUp(1);
+                    camera.MoveUp(10);
                     break;
                 case SDLK_e:    
-                    camera.MoveDown(1);
+                    camera.MoveDown(10);
                     break;
                 case SDLK_z:    
                     cube2.RotateX(-10);
@@ -377,7 +302,8 @@ int main(int argc, char **argv)
         //cube2.Draw(Projection, View);
         //cube3.Draw(Projection, View);
 
-        draw_map(map,programID,Projection, View);
+        map.draw(programID, Projection, View);
+//        draw_map(map,programID,Projection, View);
 
         SDL_GL_SwapWindow(window);
         if(SDL_GetTicks()>gticks2+100){
