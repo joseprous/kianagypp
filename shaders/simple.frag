@@ -1,7 +1,7 @@
 #version 430 core
 
 in vec3 fragmentColor;
-noperspective varying vec3 dist;
+in vec3 dist;
 const vec4 WIRE_COL = vec4(0.0,0.0,0.0,1);
 
 void main(void)

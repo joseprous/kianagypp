@@ -4,7 +4,7 @@ in vec3 fragmentColorV[];
 out vec3 fragmentColor;
 
 uniform vec2 WIN_SCALE;
-noperspective varying vec3 dist;
+out vec3 dist;
 void main(void)
 {
   vec2 p0 = WIN_SCALE * gl_PositionIn[0].xy/gl_PositionIn[0].w;
