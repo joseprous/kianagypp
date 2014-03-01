@@ -1,5 +1,8 @@
 #version 430 core
 
+layout(triangles) in;
+layout(triangle_strip, max_vertices = 3) out;
+                  
 in vec3 fragmentColorV[];
 out vec3 fragmentColor;
 
