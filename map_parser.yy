@@ -64,25 +64,25 @@
 %%
 %start map;
 
-map: entlist {driver.map = (Map) {$1};}
+map: entlist {driver.map = Map {$1};}
    ;
 
 entlist: entity entlist {add_append_vector($$,$1,$2);}
    |                    {}
    ;
 
-entity: LBRACE headers brushes RBRACE {$$=(entity){$2,$3};}
+entity: LBRACE headers brushes RBRACE {$$= entity{$2,$3};}
       ;
 
-headers: STRINGL STRINGL headers {add_append_vector($$,(header){$1,$2},$3);}
+headers: STRINGL STRINGL headers {add_append_vector($$, header{$1,$2},$3);}
       |                          {}
       ;
 
-brushes: LBRACE planes RBRACE brushes {add_append_vector($$,(rawbrush){$2},$4);}
+brushes: LBRACE planes RBRACE brushes {add_append_vector($$,rawbrush{$2},$4);}
        |                        {}
        ;
 
-planes: point point point TEXTURE numlist planes {add_append_vector($$,(rawplane){$1,$2,$3,$4,$5},$6);}
+planes: point point point TEXTURE numlist planes {add_append_vector($$,rawplane{$1,$2,$3,$4,$5},$6);}
         |                                        {}
 	;
 

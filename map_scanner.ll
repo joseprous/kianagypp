@@ -51,11 +51,11 @@ fnumber \-?{digit}+\.{digit}+
 {number}   {return yy::map_parser::make_FNUMBER(atof(yytext),loc);}
 {fnumber}   {return yy::map_parser::make_FNUMBER(atof(yytext),loc);}
 
-\"(\\.|[^\\\"])*\"  {return yy::map_parser::make_STRINGL((std::string){yytext},loc);}
+\"(\\.|[^\\\"])*\"  {return yy::map_parser::make_STRINGL(std::string(yytext),loc);}
 
-NULL {return yy::map_parser::make_TEXTURE((std::string){""},loc);}
-{id} {return yy::map_parser::make_TEXTURE((std::string){yytext},loc);}
-{id}(\/?{id})* {return yy::map_parser::make_TEXTURE((std::string){""},loc);}
+NULL {return yy::map_parser::make_TEXTURE(std::string(""),loc);}
+{id} {return yy::map_parser::make_TEXTURE(std::string(yytext),loc);}
+{id}(\/?{id})* {return yy::map_parser::make_TEXTURE(std::string(""),loc);}
 
 .          driver.error (loc, "invalid character");
 <<EOF>>    return yy::map_parser::make_END(loc);
