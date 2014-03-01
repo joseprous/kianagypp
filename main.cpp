@@ -216,30 +216,6 @@ int main(int argc, char **argv)
 
     dynamicsWorld->setGravity(btVector3(0,0,-10));
 
-//    auto groundShape = std::make_shared<btStaticPlaneShape>(btVector3(0,1,0),1);
-
-//    auto fallShape = std::make_shared<btSphereShape>(1);
-
-//    auto groundMotionState = std::make_shared<btDefaultMotionState>(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
-
-//    btRigidBody::btRigidBodyConstructionInfo
-//        groundRigidBodyCI(0,groundMotionState.get(),groundShape.get(),btVector3(0,0,0));
-
-//    auto groundRigidBody = std::make_shared<btRigidBody>(groundRigidBodyCI);
-    //dynamicsWorld->addRigidBody(groundRigidBody.get());
-
-//    auto fallMotionState = std::make_shared<btDefaultMotionState>(btTransform(btQuaternion(0,0,0,1),btVector3(0,50,0)));
-
-//    btScalar mass = 1;
-//    btVector3 fallInertia(0,0,0);
-//    fallShape->calculateLocalInertia(mass,fallInertia);
-//    btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,fallMotionState.get(),fallShape.get(),fallInertia);
-
-//    auto fallRigidBody = std::make_shared<btRigidBody>(fallRigidBodyCI);
-//    dynamicsWorld->addRigidBody(fallRigidBody.get());
-    
-
-    
     Map map = load_map(argv[1]);
 
     map.entities[0].load_brushes(dynamicsWorld);
@@ -247,7 +223,7 @@ int main(int argc, char **argv)
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders( "shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom" );
 
-    glm::vec3 start_pos(1600,1232,500);
+    glm::vec3 start_pos(1600,1232,600);
     
     Player player1(dynamicsWorld, programID, 25, start_pos);
     

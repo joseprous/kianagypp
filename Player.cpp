@@ -22,7 +22,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 Player::Player(dynamicsWorldSP dynamicsWorld, GLuint programID, float size, glm::vec3 position)
     : Cube(programID,size,position)
 {
-    fallShape = std::make_shared<btBoxShape>(btVector3(size/2,size/2,size/2));
+    fallShape = std::make_shared<btBoxShape>(btVector3(size,size,size));
     fallMotionState = std::make_shared<btDefaultMotionState>(btTransform(btQuaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w),btVector3(position.x,position.y,position.z)));
 
     btScalar mass = 1;
