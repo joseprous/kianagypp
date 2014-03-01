@@ -3,8 +3,9 @@ Experiments with modern OpenGL and other things
 
 ### Dependencies
 - GLEW
-- Bison
+- Bison 3
 - Flex
 - SDL2
+- bullet physics
 
 

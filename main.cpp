@@ -29,9 +29,13 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
+#include <memory>
+#include <bullet/btBulletDynamicsCommon.h>
+
 #include "Camera.hpp"
 #include "Cube.hpp"
 #include "Map.hpp"
+#include "Player.hpp"
 using namespace glm;
 
 
@@ -199,24 +203,57 @@ int main(int argc, char **argv)
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 
+
+
+    auto broadphase = std::make_shared<btDbvtBroadphase>();
+        
+    auto collisionConfiguration = std::make_shared<btDefaultCollisionConfiguration>();
+    auto dispatcher = std::make_shared<btCollisionDispatcher>(collisionConfiguration.get());
+
+    auto solver = std::make_shared<btSequentialImpulseConstraintSolver>();
+
+    auto dynamicsWorld = std::make_shared<btDiscreteDynamicsWorld>(dispatcher.get(),broadphase.get(),solver.get(),collisionConfiguration.get());
+
+    dynamicsWorld->setGravity(btVector3(0,0,-10));
+
+//    auto groundShape = std::make_shared<btStaticPlaneShape>(btVector3(0,1,0),1);
+
+//    auto fallShape = std::make_shared<btSphereShape>(1);
+
+//    auto groundMotionState = std::make_shared<btDefaultMotionState>(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0)));
+
+//    btRigidBody::btRigidBodyConstructionInfo
+//        groundRigidBodyCI(0,groundMotionState.get(),groundShape.get(),btVector3(0,0,0));
+
+//    auto groundRigidBody = std::make_shared<btRigidBody>(groundRigidBodyCI);
+    //dynamicsWorld->addRigidBody(groundRigidBody.get());
+
+//    auto fallMotionState = std::make_shared<btDefaultMotionState>(btTransform(btQuaternion(0,0,0,1),btVector3(0,50,0)));
+
+//    btScalar mass = 1;
+//    btVector3 fallInertia(0,0,0);
+//    fallShape->calculateLocalInertia(mass,fallInertia);
+//    btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,fallMotionState.get(),fallShape.get(),fallInertia);
+
+//    auto fallRigidBody = std::make_shared<btRigidBody>(fallRigidBodyCI);
+//    dynamicsWorld->addRigidBody(fallRigidBody.get());
+    
+
+    
     Map map = load_map(argv[1]);
 
-    map.entities[0].load_brushes();
+    map.entities[0].load_brushes(dynamicsWorld);
     
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders( "shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom" );
 
-    Cube cube1(programID, 1, glm::vec3(0,0,0));
-    Cube cube2(programID, 1, glm::vec3(0,2,2));
-    Cube cube3(programID, 5, glm::vec3(10,0,0));
+    glm::vec3 start_pos(1600,1232,500);
     
-    cube2.name = "cube2";
-
-//    cube1.RotateX(45);
-    //cube2.RotateY(90);
-    cube3.RotateX(90);
+    Player player1(dynamicsWorld, programID, 25, start_pos);
     
-    Camera camera(glm::vec3(1432,1232,240), glm::vec3(1,0,0),glm::vec3(0,0,1));
+    Camera camera(start_pos + glm::vec3(100,0,100), glm::vec3(1,0,0),glm::vec3(0,0,1));
+    camera.lookAt(player1.getPosition());
+    
     //Camera camera(glm::vec3(0,5,0), glm::vec3(1,0,0),glm::vec3(0,0,1));
     
     SDL_Event windowEvent;
@@ -254,35 +291,9 @@ int main(int argc, char **argv)
                 case SDLK_e:    
                     camera.MoveDown(10);
                     break;
-                case SDLK_z:    
-                    cube2.RotateX(-10);
-                    break;
-                case SDLK_x:    
-                    cube2.RotateX(10);
-                    break;
-                case SDLK_c:    
-                    cube2.RotateY(-10);
-                    break;
-                case SDLK_v:    
-                    cube2.RotateY(10);
-                    break;
-                case SDLK_l:
-                    cube2.MoveRight(1);
-                    break;
-                case SDLK_h:  
-                    cube2.MoveLeft(1);
-                    break;
-                case SDLK_k:    
-                    cube2.MoveForward(1);
-                    break;
-                case SDLK_j:    
-                    cube2.MoveBackward(1);
-                    break;
                 case SDLK_LEFT:
-                    camera.RotateX(-10);
                     break;
                 case SDLK_RIGHT:
-                    camera.RotateX(10);                    
                     break;
                 case SDLK_UP:
                     break;
@@ -293,14 +304,9 @@ int main(int argc, char **argv)
             case SDL_KEYUP:
                 break;
             case SDL_MOUSEMOTION:
-                //std::cout << "xrel:" << windowEvent.motion.xrel << std::endl;
-                //std::cout << "yrel:" << windowEvent.motion.yrel << std::endl;
 
                 float angleX = windowEvent.motion.xrel * (-1);
                 float angleY = windowEvent.motion.yrel * (-1);
-                //std::cout << "angleX:" << angleX << std::endl;
-                //std::cout << "angleY:" << angleY << std::endl;
-                //std::cout << std::endl;
                 
                 camera.RotateX(angleX);
                 camera.RotateY(angleY);
@@ -311,24 +317,33 @@ int main(int argc, char **argv)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(programID);
 
-        //  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
         // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
         glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
         // Camera matrix
         glm::mat4 View       = camera.GetViewMatrix();
 
-        //cube1.Draw(Projection, View);
-        //cube2.Draw(Projection, View);
-        //cube3.Draw(Projection, View);
-
         map.draw(programID, Projection, View);
-//        draw_map(map,programID,Projection, View);
 
+        player1.Draw(Projection, View);
+        
         SDL_GL_SwapWindow(window);
-        if(SDL_GetTicks()>gticks2+100){
-            cube1.RotateX(1);
-//            cube2.RotateXQ(90);
+        if(SDL_GetTicks()>gticks2+17){
+            dynamicsWorld->stepSimulation(1/60.f,10);
+
+            
+            btTransform trans;
+            player1.fallRigidBody->getMotionState()->getWorldTransform(trans);
+            auto pos = trans.getOrigin();
+            player1.setPosition(glm::vec3(pos.getX(),pos.getY(),pos.getZ()));
+            auto rot = trans.getRotation();
+            auto axis = rot.getAxis ();
+            auto angle = rot.getAngle();
+            glm::quat q = glm::angleAxis (degrees(angle), glm::vec3(axis.getX(),axis.getY(),axis.getZ()));
+
+            //           std::cout << "angle: " << angle << " axis: " << axis.getX() << "," << axis.getY() << "," << axis.getZ() << std::endl;
+            
+            player1.setOrientation(q);
+            
             gticks2=SDL_GetTicks();
         }
     }

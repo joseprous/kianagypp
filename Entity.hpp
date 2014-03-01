@@ -25,6 +25,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include "Physics.hpp"
 
 class Entity
 {
@@ -51,5 +52,8 @@ public:
     virtual void RotateY(float angle);
     virtual void Move(glm::vec3 dir, float distance);
 
+    glm::vec3 getPosition(){ return position; }
+    void setPosition(glm::vec3 pos){ position = pos; }
+    void setOrientation(glm::quat quat){ quaternion = quat; }
 };
 #endif

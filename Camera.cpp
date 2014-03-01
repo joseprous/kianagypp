@@ -43,6 +43,9 @@ void Camera::RotateY(float angle)
 {
     glm::vec3 aux = cross(direction, up);
     direction = glm::rotate(direction, angle, aux);
-    //up = cross(aux,direction);
-    //up = glm::rotate(up, angle, aux);
+}
+
+void Camera::lookAt(glm::vec3 position)
+{
+    direction = glm::normalize(position - this->position);
 }

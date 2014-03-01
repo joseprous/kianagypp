@@ -301,7 +301,7 @@ void brush::create_buffers()
     }    
 }
 
-void brush::load(rawbrush &rb)
+void brush::load(dynamicsWorldSP dynamicsWorld, rawbrush &rb)
 {
     num = rb.rawplanes.size();
 	//brush aux;
@@ -318,6 +318,21 @@ void brush::load(rawbrush &rb)
     order_vertexes();
 
     create_buffers();
+
+    convexHullShape = std::make_shared<btConvexHullShape>();
+    for(int i=0;i<num;i++){
+        for(int j=0;j<polys[i].num;j++){
+            glm::dvec3 v = polys[i].vertexes[j];
+            convexHullShape->addPoint(btVector3(v.x,v.y,v.z));
+        }
+    }
+    groundMotionState = std::make_shared<btDefaultMotionState>();
+
+    btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0,groundMotionState.get(),convexHullShape.get(),btVector3(0,0,0));
+
+    groundRigidBody = std::make_shared<btRigidBody>(groundRigidBodyCI);
+    dynamicsWorld->addRigidBody(groundRigidBody.get());
+
 }
 
 void brush::draw(GLuint programID, glm::mat4 projection, glm::mat4 view)

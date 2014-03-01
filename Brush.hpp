@@ -25,6 +25,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <glm/glm.hpp>
 #include <GL/glew.h>
+#include "Physics.hpp"
 
 struct line{
     glm::dvec3 dir;
@@ -65,7 +66,7 @@ class brush
 {
 public:
     
-    void load(rawbrush &rb);
+    void load(dynamicsWorldSP dynamicsWorld, rawbrush &rb);
     void draw(GLuint programID, glm::mat4 projection, glm::mat4 view);
 
 private:
@@ -79,6 +80,10 @@ private:
     GLuint elementbuffer;
     int num;
 
+    std::shared_ptr<btConvexHullShape> convexHullShape;
+    std::shared_ptr<btDefaultMotionState> groundMotionState;
+    std::shared_ptr<btRigidBody> groundRigidBody;
+    
     void create_buffers();
     void order_vertexes();
     void remove_extra_vertexes(std::vector<plane> &planes);

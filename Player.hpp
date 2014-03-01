@@ -18,45 +18,23 @@ You should have received a copy of the GNU General Public License
 along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MAP_HPP
-#define MAP_HPP
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
 
-#include <vector>
-#include <string>
-#include <glm/glm.hpp>
-#include <GL/glew.h>
-#include "Physics.hpp"
-#include "Brush.hpp"
+#include "Entity.hpp"
+#include "Cube.hpp"
 
-struct header
-{
-    std::string variable;
-    std::string value;
-};
-
-class entity
-{
-private:
-    
-public:
-    
-    entity();
-    entity(std::vector<header> headers, std::vector<rawbrush> rawbrushes);
-    std::vector<header> headers;
-    std::vector<rawbrush> rawbrushes;
-    std::vector<brush> brushes;
-    void load_brushes(dynamicsWorldSP dynamicsWorld);
-};
-
-class Map
+class Player : public Cube
 {
 public:
-    
-    void draw(GLuint programID, glm::mat4 projection, glm::mat4 view);
-    
-    std::vector<entity> entities;    
+
+    Player(dynamicsWorldSP dynamicsWorld, GLuint programID, float size, glm::vec3 position);
+
+    std::shared_ptr<btBoxShape> fallShape;
+    std::shared_ptr<btDefaultMotionState> fallMotionState;
+    std::shared_ptr<btRigidBody> fallRigidBody;
+
 };
 
-Map load_map(std::string map_file);
 
 #endif
