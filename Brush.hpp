@@ -66,7 +66,7 @@ class brush
 {
 public:
     
-    void load(dynamicsWorldSP dynamicsWorld, rawbrush &rb);
+    void load(dynamicsWorldSP dynamicsWorld, rawbrush &rb, float scale);
     void draw(GLuint programID, glm::mat4 projection, glm::mat4 view);
 
 private:
@@ -89,6 +89,7 @@ private:
     void remove_extra_vertexes(std::vector<plane> &planes);
     void add_vertexes_to_polys(std::vector<plane> &planes);
     void create_planes_from_points(rawbrush &b, std::vector<plane> &planes);
+    void scale_vertexes(float scale);
 
 };
 

@@ -45,7 +45,7 @@ public:
     std::vector<header> headers;
     std::vector<rawbrush> rawbrushes;
     std::vector<brush> brushes;
-    void load_brushes(dynamicsWorldSP dynamicsWorld);
+    void load_brushes(dynamicsWorldSP dynamicsWorld, float scale);
 };
 
 class Map

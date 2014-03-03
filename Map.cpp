@@ -32,12 +32,12 @@ entity::entity(std::vector<header> headers, std::vector<rawbrush> rawbrushes)
     this->rawbrushes = rawbrushes;
 }
 
-void entity::load_brushes(dynamicsWorldSP dynamicsWorld)
+void entity::load_brushes(dynamicsWorldSP dynamicsWorld, float scale)
 {
     for(rawbrush b : this->rawbrushes)
     {
         brush aux;
-        aux.load(dynamicsWorld,b);
+        aux.load(dynamicsWorld,b,scale);
         this->brushes.push_back(aux);        
     }
 }

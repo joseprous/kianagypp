@@ -218,17 +218,21 @@ int main(int argc, char **argv)
 
     Map map = load_map(argv[1]);
 
-    map.entities[0].load_brushes(dynamicsWorld);
+    float scale = 0.01;
+    map.entities[0].load_brushes(dynamicsWorld, scale);
     
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders( "shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom" );
 
-    glm::vec3 start_pos(1600,1232,600);
+    glm::vec3 start_pos(1600*scale,1232*scale,600*scale);
     
-    Player player1(dynamicsWorld, programID, 25, start_pos);
-    
-    Camera camera(start_pos + glm::vec3(100,0,100), glm::vec3(1,0,0),glm::vec3(0,0,1));
-    camera.lookAt(player1.getPosition());
+    Player player1(dynamicsWorld, programID, 25*scale, start_pos);
+
+    glm::vec3 camera_pos = start_pos + glm::vec3(0*scale,-300*scale,100*scale);
+    glm::vec3 camera_dir = glm::vec3(1,0,0);
+        
+    Camera camera( camera_pos, camera_dir,glm::vec3(0,0,1));
+    camera.lookAt(player1.getPosition() + glm::vec3(100*scale,0*scale,-200*scale));
     
     //Camera camera(glm::vec3(0,5,0), glm::vec3(1,0,0),glm::vec3(0,0,1));
     
@@ -250,22 +254,22 @@ int main(int argc, char **argv)
                     quit = true;
                     break;
                 case SDLK_d:
-                    camera.MoveRight(10);
+                    camera.MoveRight(10*scale);
                     break;
                 case SDLK_a:  
-                    camera.MoveLeft(10);
+                    camera.MoveLeft(10*scale);
                     break;
                 case SDLK_w:    
-                    camera.MoveForward(10);
+                    camera.MoveForward(10*scale);
                     break;
                 case SDLK_s:    
-                    camera.MoveBackward(10);
+                    camera.MoveBackward(10*scale);
                     break;
                 case SDLK_q:    
-                    camera.MoveUp(10);
+                    camera.MoveUp(10*scale);
                     break;
                 case SDLK_e:    
-                    camera.MoveDown(10);
+                    camera.MoveDown(10*scale);
                     break;
                 case SDLK_LEFT:
                     break;

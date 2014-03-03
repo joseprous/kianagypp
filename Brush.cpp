@@ -300,8 +300,16 @@ void brush::create_buffers()
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLfloat)*element_buffer_data.size(), element_buffer_datap, GL_STATIC_DRAW);
     }    
 }
+void brush::scale_vertexes(float scale)
+{
+	for(int i=0;i<num;i++){
+        for(int j=0;j<polys[i].num;j++){			
+            polys[i].vertexes[j]*=scale;
+        }
+	}        
+}
 
-void brush::load(dynamicsWorldSP dynamicsWorld, rawbrush &rb)
+void brush::load(dynamicsWorldSP dynamicsWorld, rawbrush &rb, float scale)
 {
     num = rb.rawplanes.size();
 	//brush aux;
@@ -317,6 +325,8 @@ void brush::load(dynamicsWorldSP dynamicsWorld, rawbrush &rb)
 
     order_vertexes();
 
+    scale_vertexes(scale);
+    
     create_buffers();
 
     convexHullShape = std::make_shared<btConvexHullShape>();
