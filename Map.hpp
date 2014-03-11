@@ -42,9 +42,11 @@ public:
     
     entity();
     entity(std::vector<header> headers, std::vector<rawbrush> rawbrushes);
-    std::vector<header> headers;
-    std::vector<rawbrush> rawbrushes;
-    std::vector<brush> brushes;
+
+    std::vector<header> mHeaders;
+    std::vector<rawbrush> mRawbrushes;
+    std::vector<brush> mBrushes;
+
     void load_brushes(dynamicsWorldSP dynamicsWorld, float scale);
 };
 

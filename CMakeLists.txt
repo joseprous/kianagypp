@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(kianagy++)
 
 SET (CMAKE_CXX_COMPILER           "/usr/bin/clang++")
-SET (CMAKE_CXX_FLAGS              "-fno-omit-frame-pointer -pedantic -Werror -Wall -Wno-deprecated-register -std=c++11 -g")
+SET (CMAKE_CXX_FLAGS              "-std=c++11 -g -fno-omit-frame-pointer -Weverything -Werror -Wno-c++98-compat -Wno-missing-prototypes -Wno-padded")
 
 find_package(GLEW REQUIRED)
 
@@ -27,6 +27,19 @@ FILE(COPY ${CMAKE_SOURCE_DIR}/Physics.hpp DESTINATION ${CMAKE_BINARY_DIR})
 FILE(COPY ${CMAKE_SOURCE_DIR}/Brush.hpp DESTINATION ${CMAKE_BINARY_DIR})
 FILE(COPY ${CMAKE_SOURCE_DIR}/Map.hpp DESTINATION ${CMAKE_BINARY_DIR})
 FILE(COPY ${CMAKE_SOURCE_DIR}/Map_Driver.hpp DESTINATION ${CMAKE_BINARY_DIR})
+
+set_source_files_properties(
+  ${CMAKE_BINARY_DIR}/map_scanner.cpp;${CMAKE_BINARY_DIR}/map_parser.cpp
+  PROPERTIES
+  COMPILE_FLAGS "-Wno-everything"
+)
+
+set_source_files_properties(
+  ${CMAKE_SOURCE_DIR}/Map_Driver.cpp;${CMAKE_SOURCE_DIR}/Map.cpp
+  PROPERTIES
+  COMPILE_FLAGS "-Wno-error"
+)
+
 
 add_executable(kianagy++ main.cpp Camera.cpp Cube.cpp Entity.cpp Axis.cpp ${BISON_map-parser_OUTPUTS} ${FLEX_map-scanner_OUTPUTS} Map_Driver.cpp ${CMAKE_CURRENT_BINARY_DIR}/map_parser.cpp Map.cpp Brush.cpp Player.cpp)
 

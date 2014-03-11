@@ -23,7 +23,7 @@ Player::Player(dynamicsWorldSP dynamicsWorld, GLuint programID, float size, glm:
     : Cube(programID,size,position)
 {
     fallShape = std::make_shared<btBoxShape>(btVector3(size,size,size));
-    fallMotionState = std::make_shared<btDefaultMotionState>(btTransform(btQuaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w),btVector3(position.x,position.y,position.z)));
+    fallMotionState = std::make_shared<btDefaultMotionState>(btTransform(btQuaternion(mQuaternion.x, mQuaternion.y, mQuaternion.z, mQuaternion.w),btVector3(position.x,position.y,position.z)));
 
     btScalar mass = 1;
     btVector3 fallInertia(0,0,0);
@@ -33,4 +33,9 @@ Player::Player(dynamicsWorldSP dynamicsWorld, GLuint programID, float size, glm:
     fallRigidBody = std::make_shared<btRigidBody>(fallRigidBodyCI);
     dynamicsWorld->addRigidBody(fallRigidBody.get());
 
+}
+
+void Player::MoveForward(float distance)
+{
+    Entity::MoveForward(distance);
 }

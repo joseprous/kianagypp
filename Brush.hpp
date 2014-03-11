@@ -59,7 +59,7 @@ struct poly
     glm::dvec3 normal;
     std::string tex;
     glm::dvec3 center;
-    int num;
+    size_t num;
 };
 
 class brush
@@ -67,10 +67,12 @@ class brush
 public:
     
     void load(dynamicsWorldSP dynamicsWorld, rawbrush &rb, float scale);
-    void draw(GLuint programID, glm::mat4 projection, glm::mat4 view);
+    void draw();
 
 private:
+   
     
+    size_t num;
     std::vector<poly> polys;
     std::vector<GLfloat> vertex_buffer_data;
     std::vector<GLfloat> color_buffer_data;
@@ -78,11 +80,13 @@ private:
     GLuint vertexbuffer;
     GLuint colorbuffer;
     GLuint elementbuffer;
-    int num;
+
+    //char pad[4];
 
     std::shared_ptr<btConvexHullShape> convexHullShape;
     std::shared_ptr<btDefaultMotionState> groundMotionState;
     std::shared_ptr<btRigidBody> groundRigidBody;
+    
     
     void create_buffers();
     void order_vertexes();

@@ -31,21 +31,21 @@ Camera::Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
 }
 glm::mat4 Camera::GetViewMatrix()
 {
-    return glm::lookAt( position, position + direction, up );
+    return glm::lookAt( mPosition, mPosition + mDirection, mUp );
 }
 
 void Camera::RotateX(float angle)
 {
-    direction = glm::rotate(direction, angle, up);
+    mDirection = glm::rotate(mDirection, angle, mUp);
 }
 
 void Camera::RotateY(float angle)
 {
-    glm::vec3 aux = cross(direction, up);
-    direction = glm::rotate(direction, angle, aux);
+    glm::vec3 aux = cross(mDirection, mUp);
+    mDirection = glm::rotate(mDirection, angle, aux);
 }
 
 void Camera::lookAt(glm::vec3 position)
 {
-    direction = glm::normalize(position - this->position);
+    mDirection = glm::normalize(position - mPosition);
 }

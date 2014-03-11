@@ -58,7 +58,7 @@ int inter2planes(plane p1, plane p2, line *l1)
     double s1, s2, a, b;
 	double n1n2dot,n1normsqr,n2normsqr;
     glm::dvec3 d = glm::cross(p1.normal,p2.normal);
-    if (glm::length(d) == 0) {
+    if (glm::length(d) < 0.0001f) {
         return 0;
     }
 	
@@ -88,7 +88,7 @@ int interlineplane(struct line line1,struct plane plane1, glm::dvec3 &point)
 {  
     // Check for (near) parallel line and plane
     double denominator = glm::dot(line1.dir, plane1.normal);
-    if (dabs(denominator) == 0) {
+    if (dabs(denominator) < 0.0001f) {
         return 0;
     }
 
@@ -127,8 +127,8 @@ constexpr double pi() { return std::atan(1)*4; }
 
 void brush::create_planes_from_points(rawbrush &b, std::vector<plane> &planes)
 {
-	int maxvert=(int)comb(num-1,2)+1;
-	for(int i=0;i<num;i++){
+	unsigned int maxvert = comb((unsigned int)num-1,2)+1;
+	for(unsigned int i=0;i<num;i++){
 		planes[i]=plane3points(b.rawplanes[i].point0, b.rawplanes[i].point1, b.rawplanes[i].point2);
         
 		polys[i].normal=planes[i].normal;
@@ -142,10 +142,10 @@ void brush::add_vertexes_to_polys(std::vector<plane> &planes)
 {
     glm::dvec3 pointaux;
 	line lineaux;
-    for(int i=0;i<num;i++){
-		for(int j=i+1;j<num;j++){
+    for(unsigned int i=0;i<num;i++){
+		for(unsigned int j=i+1;j<num;j++){
 			if(inter2planes(planes[i],planes[j],&lineaux)){
-				for(int k=0;k<num;k++){
+				for(unsigned int k=0;k<num;k++){
 					if(k!=i && k!=j){
 						if(interlineplane(lineaux,planes[k],pointaux)){
 							polys[k].vertexes[polys[k].num]=pointaux;
@@ -160,11 +160,11 @@ void brush::add_vertexes_to_polys(std::vector<plane> &planes)
 
 void brush::remove_extra_vertexes(std::vector<plane> &planes)
 {
-	for(int i=0;i<num;i++){
-		for(int j=0;j<polys[i].num;j++){
-			for(int k=j+1;k<polys[i].num;k++){
+	for(unsigned int i=0;i<num;i++){
+		for(unsigned int j=0;j<polys[i].num;j++){
+			for(unsigned int k=j+1;k<polys[i].num;k++){
 				if(comppoints(polys[i].vertexes[j],polys[i].vertexes[k])){
-					for(int c=j;c<polys[i].num-1;c++){
+					for(unsigned int c=j;c<polys[i].num-1;c++){
 						polys[i].vertexes[c]=polys[i].vertexes[c+1];
 					}
 					polys[i].num--;
@@ -175,11 +175,11 @@ void brush::remove_extra_vertexes(std::vector<plane> &planes)
 		}
 	}
 	
-	for(int i=0;i<num;i++){
-		for(int j=0;j<polys[i].num;j++){
-			for(int k=0;k<num;k++){
+	for(unsigned int i=0;i<num;i++){
+		for(unsigned int j=0;j<polys[i].num;j++){
+			for(unsigned int k=0;k<num;k++){
 				if(k!=i && pointinplane(polys[i].vertexes[j],planes[k])==1){
-					for(int c=j;c<polys[i].num-1;c++){
+					for(unsigned int c=j;c<polys[i].num-1;c++){
 						polys[i].vertexes[c]=polys[i].vertexes[c+1];
 					}
 					polys[i].num--;
@@ -194,11 +194,11 @@ void brush::remove_extra_vertexes(std::vector<plane> &planes)
 void ordervertexes(struct poly *p)
 {
     glm::dvec3 centro,p1,p2,pointaux;
-    int i,ban;
-    float *angs;
-    float gdot,ga;
+    unsigned int i,ban;
+    double *angs;
+    double gdot,ga;
   
-    angs=(float *)malloc(sizeof(float)*p->num);
+    angs=(double *)malloc(sizeof(double)*p->num);
     centro.x=0;
     centro.y=0;
     centro.z=0;
@@ -248,7 +248,7 @@ void ordervertexes(struct poly *p)
 
 void brush::order_vertexes()
 {
-	for(int i=0;i<num;i++){
+	for(unsigned int i=0;i<num;i++){
         ordervertexes(&(polys[i]));
 	}    
 }
@@ -256,29 +256,29 @@ void brush::order_vertexes()
 void brush::create_buffers()
 {
     GLuint elem=0;
-    for(int i=0;i<num;i++){
+    for(unsigned int i=0;i<num;i++){
         glm::dvec3 v;
         
-        for(int j=2;j<polys[i].num;j++){
+        for(unsigned int j=2;j<polys[i].num;j++){
             v = polys[i].vertexes[0];
-            vertex_buffer_data.push_back(v.x);
-            vertex_buffer_data.push_back(v.y);
-            vertex_buffer_data.push_back(v.z);
+            vertex_buffer_data.push_back((GLfloat)v.x);
+            vertex_buffer_data.push_back((GLfloat)v.y);
+            vertex_buffer_data.push_back((GLfloat)v.z);
             element_buffer_data.push_back(elem++);
 
             v = polys[i].vertexes[j-1];
-            vertex_buffer_data.push_back(v.x);
-            vertex_buffer_data.push_back(v.y);
-            vertex_buffer_data.push_back(v.z);
+            vertex_buffer_data.push_back((GLfloat)v.x);
+            vertex_buffer_data.push_back((GLfloat)v.y);
+            vertex_buffer_data.push_back((GLfloat)v.z);
             element_buffer_data.push_back(elem++);
             
             v = polys[i].vertexes[j];
-            vertex_buffer_data.push_back(v.x);
-            vertex_buffer_data.push_back(v.y);
-            vertex_buffer_data.push_back(v.z);
+            vertex_buffer_data.push_back((GLfloat)v.x);
+            vertex_buffer_data.push_back((GLfloat)v.y);
+            vertex_buffer_data.push_back((GLfloat)v.z);
             element_buffer_data.push_back(elem++);
 
-            for(int k=0;k<9;k++){
+            for(unsigned int k=0;k<9;k++){
                 color_buffer_data.push_back(1);
             }
         }
@@ -302,8 +302,8 @@ void brush::create_buffers()
 }
 void brush::scale_vertexes(float scale)
 {
-	for(int i=0;i<num;i++){
-        for(int j=0;j<polys[i].num;j++){			
+	for(unsigned int i=0;i<num;i++){
+        for(unsigned int j=0;j<polys[i].num;j++){			
             polys[i].vertexes[j]*=scale;
         }
 	}        
@@ -330,10 +330,10 @@ void brush::load(dynamicsWorldSP dynamicsWorld, rawbrush &rb, float scale)
     create_buffers();
 
     convexHullShape = std::make_shared<btConvexHullShape>();
-    for(int i=0;i<num;i++){
-        for(int j=0;j<polys[i].num;j++){
+    for(unsigned int i=0;i<num;i++){
+        for(unsigned int j=0;j<polys[i].num;j++){
             glm::dvec3 v = polys[i].vertexes[j];
-            convexHullShape->addPoint(btVector3(v.x,v.y,v.z));
+            convexHullShape->addPoint(btVector3((GLfloat)v.x,(GLfloat)v.y,(GLfloat)v.z));
         }
     }
     groundMotionState = std::make_shared<btDefaultMotionState>();
@@ -345,7 +345,7 @@ void brush::load(dynamicsWorldSP dynamicsWorld, rawbrush &rb, float scale)
 
 }
 
-void brush::draw(GLuint programID, glm::mat4 projection, glm::mat4 view)
+void brush::draw()
 {
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -375,7 +375,7 @@ void brush::draw(GLuint programID, glm::mat4 projection, glm::mat4 view)
     // Draw the triangles !
     glDrawElements(
         GL_TRIANGLES,      // mode
-        element_buffer_data.size(),    // count
+        (GLsizei)element_buffer_data.size(),    // count
         GL_UNSIGNED_INT,   // type
         (void*)0           // element array buffer offset
         );

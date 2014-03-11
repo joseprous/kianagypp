@@ -31,16 +31,18 @@ class Entity
 {
 protected:
     
-    glm::vec3 position;
-    glm::vec3 direction;
-    glm::vec3 up;
-    glm::quat quaternion;
+    glm::vec3 mPosition;
+    glm::vec3 mDirection;
+    glm::vec3 mUp;
+    glm::quat mQuaternion;
     
 public:
 
-    std::string name;
+    char pad[4];
+    std::string mName;
 
     Entity(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
+    virtual ~Entity() { }
 
     virtual void MoveForward(float distance);
     virtual void MoveBackward(float distance);
@@ -52,8 +54,9 @@ public:
     virtual void RotateY(float angle);
     virtual void Move(glm::vec3 dir, float distance);
 
-    glm::vec3 getPosition(){ return position; }
-    void setPosition(glm::vec3 pos){ position = pos; }
-    void setOrientation(glm::quat quat){ quaternion = quat; }
+    glm::vec3 getPosition(){ return mPosition; }
+    void setPosition(glm::vec3 pos){ mPosition = pos; }
+    void setOrientation(glm::quat quat){ mQuaternion = quat; }
+
 };
 #endif

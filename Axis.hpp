@@ -52,14 +52,16 @@ private:
     
 public:
 
-    GLuint vertexbuffer;
-    GLuint colorbuffer;
-    float size;
-    GLuint programID;
+    GLuint mVertexbuffer;
+    GLuint mColorbuffer;
+    float mSize;
+    GLuint mProgramID;
 
     Axis(GLuint programID, float size);
     void Draw(glm::mat4 projection, glm::mat4 view, glm::mat4 translate, glm::mat4 orientation);
     void Draw();
+
+    void MoveForward(float distance);
 };
 
 #endif

@@ -28,17 +28,17 @@ entity::entity(){}
 
 entity::entity(std::vector<header> headers, std::vector<rawbrush> rawbrushes)
 {
-    this->headers = headers;
-    this->rawbrushes = rawbrushes;
+    mHeaders = headers;
+    mRawbrushes = rawbrushes;
 }
 
 void entity::load_brushes(dynamicsWorldSP dynamicsWorld, float scale)
 {
-    for(rawbrush b : this->rawbrushes)
+    for(rawbrush b : mRawbrushes)
     {
         brush aux;
         aux.load(dynamicsWorld,b,scale);
-        this->brushes.push_back(aux);        
+        mBrushes.push_back(aux);        
     }
 }
 void Map::draw(GLuint programID, glm::mat4 projection, glm::mat4 view)
@@ -48,17 +48,17 @@ void Map::draw(GLuint programID, glm::mat4 projection, glm::mat4 view)
     glm::mat4 MVP        = projection * view * Model; // Remember, matrix multiplication is the other way around
 
 
-    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+    GLuint MatrixID = (GLuint)glGetUniformLocation(programID, "MVP");
 
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
 
-    GLuint WinScaleID = glGetUniformLocation(programID, "WIN_SCALE");
+    GLuint WinScaleID = (GLuint)glGetUniformLocation(programID, "WIN_SCALE");
 
     glUniform2f(WinScaleID, 640, 480);
 
-    for(brush b : entities[0].brushes){
-        b.draw(programID, projection, view);
+    for(brush b : entities[0].mBrushes){
+        b.draw();
     }    
 }
 

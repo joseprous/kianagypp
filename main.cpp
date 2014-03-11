@@ -38,7 +38,6 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include "Player.hpp"
 using namespace glm;
 
-
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path,const char * geometry_file_path)
 {
     // Create the shaders
@@ -89,7 +88,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
     // Check Vertex Shader
     glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    std::vector<char> VertexShaderErrorMessage(InfoLogLength);
+    std::vector<char> VertexShaderErrorMessage((size_t)InfoLogLength);
     glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
     fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
 
@@ -102,7 +101,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
     // Check Fragment Shader
     glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    std::vector<char> FragmentShaderErrorMessage(InfoLogLength);
+    std::vector<char> FragmentShaderErrorMessage((size_t)InfoLogLength);
     glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
     fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
 
@@ -115,7 +114,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
     // Check Geometry Shader
     glGetShaderiv(GeometryShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(GeometryShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    std::vector<char> GeometryShaderErrorMessage(InfoLogLength);
+    std::vector<char> GeometryShaderErrorMessage((size_t)InfoLogLength);
     glGetShaderInfoLog(GeometryShaderID, InfoLogLength, NULL, &GeometryShaderErrorMessage[0]);
     fprintf(stdout, "%s\n", &GeometryShaderErrorMessage[0]);
     
@@ -130,7 +129,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
     // Check the program
     glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
     glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    std::vector<char> ProgramErrorMessage( max(InfoLogLength, int(1)) );
+    std::vector<char> ProgramErrorMessage( max((size_t)InfoLogLength, size_t(1)) );
     glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
     fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
 
@@ -158,7 +157,7 @@ SDL_Window* init_sdl()
     int width = 640; int height = 480;
     SDL_Window* window;
     SDL_GLContext context;
-    int other_flags = 0;
+    Uint32 other_flags = 0;
 
     window = SDL_CreateWindow("kianagy++", 
                                SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
@@ -218,7 +217,7 @@ int main(int argc, char **argv)
 
     Map map = load_map(argv[1]);
 
-    float scale = 0.01;
+    float scale = 0.01f;
     map.entities[0].load_brushes(dynamicsWorld, scale);
     
     // Create and compile our GLSL program from the shaders

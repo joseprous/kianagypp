@@ -26,64 +26,64 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <glm/gtx/rotate_vector.hpp>
 using namespace glm;
 
-void printVec3(std::string name, glm::vec3 v)
+/*void printVec3(std::string name, glm::vec3 v)
 {
     std::cout << name << ": " << v.x << "," << v.y << "," << v.z << std::endl;    
 }
-
+*/
 Entity::Entity(glm::vec3 position, glm::vec3 direction, glm::vec3 up)
 {
-    this->position = position;
-    this->direction = glm::normalize(direction);
-    this->up = glm::normalize(up);
-    this->quaternion = angleAxis((float)0.0, direction);
+    mPosition = position;
+    mDirection = glm::normalize(direction);
+    mUp = glm::normalize(up);
+    mQuaternion = angleAxis((float)0.0, direction);
 }
 
 void Entity::Move(glm::vec3 dir, float distance)
 {
-    glm::vec3 aux = quaternion * dir;
-    position = position + (aux * distance);    
+    glm::vec3 aux = mQuaternion * dir;
+    mPosition = mPosition + (aux * distance);    
 }
 
 
 void Entity::MoveForward(float distance)
 {
-    Move(direction, distance);
+    Move(mDirection, distance);
 }
 
 void Entity::MoveBackward(float distance)
 {
-    Move(direction * (-1.0f), distance);
+    Move(mDirection * (-1.0f), distance);
 }
 
 void Entity::MoveRight(float distance)
 {
-    Move(cross(direction, up), distance);
+    Move(cross(mDirection, mUp), distance);
 }
 
 void Entity::MoveLeft(float distance)
 {
-    Move(cross(up,direction), distance);
+    Move(cross(mUp,mDirection), distance);
 }
 
 void Entity::MoveUp(float distance)
 {
-    Move(up, distance);
+    Move(mUp, distance);
 }
 
 void Entity::MoveDown(float distance)
 {
-    Move(up * (-1.0f), distance);
+    Move(mUp * (-1.0f), distance);
 }
 
 void Entity::RotateX(float angle)
 {
-    quaternion = glm::rotate(quaternion,angle,  up);
+    mQuaternion = glm::rotate(mQuaternion,angle,  mUp);
 }
 
 void Entity::RotateY(float angle)
 {
-    glm::vec3 aux = cross(direction, up);
-    quaternion = glm::rotate(quaternion,angle,aux);
+    glm::vec3 aux = cross(mDirection, mUp);
+    mQuaternion = glm::rotate(mQuaternion,angle,aux);
 }
 

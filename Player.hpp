@@ -34,6 +34,7 @@ public:
     std::shared_ptr<btDefaultMotionState> fallMotionState;
     std::shared_ptr<btRigidBody> fallRigidBody;
 
+    void MoveForward(float distance);
 };
 
 
