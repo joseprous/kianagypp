@@ -18,10 +18,12 @@ You should have received a copy of the GNU General Public License
 along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Axis.hpp"
+#include <iostream>
 
-Axis::Axis(GLuint programID, float size)
-    : Entity(glm::vec3(0,0,0), glm::vec3(0,0,1), glm::vec3(0,1,0))
+#include "Cube.hpp"
+
+Cube::Cube(GLuint programID, float size, glm::vec3 position)
+    : Entity(position, glm::vec3(0,0,1), glm::vec3(0,1,0))
 {
     mSize = size;
     mProgramID = programID;
@@ -36,8 +38,59 @@ Axis::Axis(GLuint programID, float size)
 
 }
 
-void Axis::Draw()
+/*void printMat(glm::mat4  mat){
+    int i,j;
+    for (j=0; j<4; j++){
+        for (i=0; i<4; i++){
+            std::cout << mat[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+    }*/
+
+void printVec3(std::string name, glm::vec3 v);
+
+
+void Cube::Draw(glm::mat4 projection, glm::mat4 view)
 {
+    // Model matrix : an identity matrix (model will be at the origin)
+    glm::mat4 Model      = glm::mat4(1.0f);  // Changes for each model !
+
+    glm::mat4 translate = glm::translate(mPosition);
+    glm::mat4 orientation =  glm::toMat4(mQuaternion);
+    glm::mat4 scale = glm::scale( glm::vec3(mSize,mSize,mSize) );
+    Model = translate * orientation * scale * Model;
+
+/*    if(!this->name.compare("cube2")){
+        printVec3("direction",direction);
+        printVec3("up",up);
+        printMat(orientation);
+        }*/
+//    Model = glm::translate(Model, this->position);
+//    Model = glm::rotate( Model, angle, myRotationAxis );
+    
+    // Our ModelViewProjection : multiplication of our 3 matrices
+    glm::mat4 MVP        = projection * view * Model; // Remember, matrix multiplication is the other way around
+
+
+    // Get a handle for our "MVP" uniform.
+    // Only at initialisation time.
+    GLuint MatrixID = (GLuint)glGetUniformLocation(mProgramID, "MVP");
+
+    // Send our transformation to the currently bound shader,
+    // in the "MVP" uniform
+    // For each model you render, since the MVP will be different (at least the M part)
+    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+
+    GLuint WinScaleID = (GLuint)glGetUniformLocation(mProgramID, "WIN_SCALE");
+
+    glUniform2f(WinScaleID, 640, 480);
+
+    
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     // 1rst attribute buffer : vertices
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexbuffer);
@@ -62,39 +115,16 @@ void Axis::Draw()
         );
 
     // Draw the triangle !
-    glDrawArrays(GL_LINES, 0, 2*3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+//    glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+    glDrawArrays(GL_TRIANGLES, 0, 3*12); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
     glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);    
+    glDisableVertexAttribArray(1);
+
+//    axis.Draw(projection,view,translate,orientation);
 }
 
-void Axis::Draw(glm::mat4 projection, glm::mat4 view, glm::mat4 translate, glm::mat4 orientation)
-{
-    // Model matrix : an identity matrix (model will be at the origin)
-    glm::mat4 Model      = glm::mat4(1.0f);  // Changes for each model !
-
-    //   glm::mat4 translate = glm::translate(this->position);
-    //glm::mat4 orientation =  glm::toMat4(quaternion);
-    glm::mat4 scale = glm::scale( glm::vec3(mSize,mSize,mSize) );
-    Model = translate  * orientation * scale * Model;
-    
-    // Our ModelViewProjection : multiplication of our 3 matrices
-    glm::mat4 MVP        = projection * view * Model; // Remember, matrix multiplication is the other way around
-
-
-    // Get a handle for our "MVP" uniform.
-    // Only at initialisation time.
-    GLuint MatrixID = (GLuint)glGetUniformLocation(mProgramID, "MVP");
-
-    // Send our transformation to the currently bound shader,
-    // in the "MVP" uniform
-    // For each model you render, since the MVP will be different (at least the M part)
-    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-    Draw();
-}
-
-void Axis::MoveForward(float distance)
+void Cube::MoveForward(float distance)
 {
     Entity::MoveForward(distance);
 }

@@ -32,10 +32,10 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <memory>
 #include <bullet/btBulletDynamicsCommon.h>
 
-#include "Camera.hpp"
-#include "Cube.hpp"
-#include "Map.hpp"
-#include "Player.hpp"
+#include "entities/Camera.hpp"
+#include "entities/Cube.hpp"
+#include "map/Map.hpp"
+#include "entities/Player.hpp"
 using namespace glm;
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path,const char * geometry_file_path)

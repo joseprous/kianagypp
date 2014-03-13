@@ -22,7 +22,6 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #define CUBE_HPP
 
 #include "Entity.hpp"
-#include "Axis.hpp"
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -129,7 +128,6 @@ private:
     GLuint mColorbuffer;
     float mSize;
     GLuint mProgramID;
-    Axis mAxis;
     
 public:
     

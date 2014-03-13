@@ -13,8 +13,8 @@ include(FindPkgConfig)
 pkg_search_module(SDL2 REQUIRED sdl2)
 include_directories(${SDL2_INCLUDE_DIRS})
 
-BISON_TARGET(map-parser map_parser.yy ${CMAKE_CURRENT_BINARY_DIR}/map_parser.cpp)
-FLEX_TARGET(map-scanner map_scanner.ll ${CMAKE_CURRENT_BINARY_DIR}/map_scanner.cpp)
+BISON_TARGET(map-parser src/map/map_parser.yy ${CMAKE_CURRENT_BINARY_DIR}/map_parser.cpp)
+FLEX_TARGET(map-scanner src/map/map_scanner.ll ${CMAKE_CURRENT_BINARY_DIR}/map_scanner.cpp)
 ADD_FLEX_BISON_DEPENDENCY(map-scanner map-parser)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
@@ -23,10 +23,10 @@ set(BULLET_LIBRARIES BulletDynamics BulletCollision LinearMath)
 
 INCLUDE_DIRECTORIES(${BULLET_INCLUDE_DIR})
 
-FILE(COPY ${CMAKE_SOURCE_DIR}/Physics.hpp DESTINATION ${CMAKE_BINARY_DIR})
-FILE(COPY ${CMAKE_SOURCE_DIR}/Brush.hpp DESTINATION ${CMAKE_BINARY_DIR})
-FILE(COPY ${CMAKE_SOURCE_DIR}/Map.hpp DESTINATION ${CMAKE_BINARY_DIR})
-FILE(COPY ${CMAKE_SOURCE_DIR}/Map_Driver.hpp DESTINATION ${CMAKE_BINARY_DIR})
+FILE(COPY ${CMAKE_SOURCE_DIR}/src/physics/Physics.hpp DESTINATION ${CMAKE_BINARY_DIR})
+FILE(COPY ${CMAKE_SOURCE_DIR}/src/map/Brush.hpp DESTINATION ${CMAKE_BINARY_DIR})
+FILE(COPY ${CMAKE_SOURCE_DIR}/src/map/Map.hpp DESTINATION ${CMAKE_BINARY_DIR})
+FILE(COPY ${CMAKE_SOURCE_DIR}/src/map/Map_Driver.hpp DESTINATION ${CMAKE_BINARY_DIR})
 
 set_source_files_properties(
   ${CMAKE_BINARY_DIR}/map_scanner.cpp;${CMAKE_BINARY_DIR}/map_parser.cpp
@@ -35,20 +35,20 @@ set_source_files_properties(
 )
 
 set_source_files_properties(
-  ${CMAKE_SOURCE_DIR}/Map_Driver.cpp;${CMAKE_SOURCE_DIR}/Map.cpp
+  ${CMAKE_SOURCE_DIR}/src/map/Map_Driver.cpp;${CMAKE_SOURCE_DIR}/src/map/Map.cpp
   PROPERTIES
   COMPILE_FLAGS "-Wno-error"
 )
 
-
-add_executable(kianagy++ main.cpp Camera.cpp Cube.cpp Entity.cpp Axis.cpp ${BISON_map-parser_OUTPUTS} ${FLEX_map-scanner_OUTPUTS} Map_Driver.cpp ${CMAKE_CURRENT_BINARY_DIR}/map_parser.cpp Map.cpp Brush.cpp Player.cpp)
+#file(GLOB_RECURSE SRC_FILES "*.cpp")
+  
+add_executable(kianagy++ src/main.cpp src/entities/Camera.cpp src/entities/Cube.cpp src/entities/Entity.cpp ${BISON_map-parser_OUTPUTS} ${FLEX_map-scanner_OUTPUTS} src/map/Map_Driver.cpp ${CMAKE_CURRENT_BINARY_DIR}/map_parser.cpp src/map/Map.cpp src/map/Brush.cpp src/entities/Player.cpp)
 
 target_link_libraries(kianagy++ ${SDL2_LIBRARIES} GLEW GL ${BULLET_LIBRARIES})
 
-FILE(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR})
+FILE(COPY ${CMAKE_SOURCE_DIR}/src/shaders DESTINATION ${CMAKE_BINARY_DIR})
 FILE(COPY ${CMAKE_SOURCE_DIR}/maps DESTINATION ${CMAKE_BINARY_DIR})
 
-#add_executable(map_parser ${BISON_map-parser_OUTPUTS} ${FLEX_map-scanner_OUTPUTS} Map_Driver.cpp map_main.cpp ${CMAKE_CURRENT_BINARY_DIR}/map_parser.cpp)
 
 
 
