@@ -40,9 +40,10 @@ set_source_files_properties(
   COMPILE_FLAGS "-Wno-error"
 )
 
-#file(GLOB_RECURSE SRC_FILES "*.cpp")
-  
-add_executable(kianagy++ src/main.cpp src/entities/Camera.cpp src/entities/Cube.cpp src/entities/Entity.cpp ${BISON_map-parser_OUTPUTS} ${FLEX_map-scanner_OUTPUTS} src/map/Map_Driver.cpp ${CMAKE_CURRENT_BINARY_DIR}/map_parser.cpp src/map/Map.cpp src/map/Brush.cpp src/entities/Player.cpp)
+file(GLOB_RECURSE SRC_FILES "src/*.cpp")
+
+add_executable(kianagy++ ${SRC_FILES} ${BISON_map-parser_OUTPUTS} ${FLEX_map-scanner_OUTPUTS} ${CMAKE_CURRENT_BINARY_DIR}/map_parser.cpp )
+
 
 target_link_libraries(kianagy++ ${SDL2_LIBRARIES} GLEW GL ${BULLET_LIBRARIES})
 
