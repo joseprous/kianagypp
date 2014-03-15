@@ -33,7 +33,7 @@ struct line{
 };
 
 //ax+by+cz+d=0
-struct plane{
+struct Plane{
 	double a,b,c,d;
 	glm::dvec3 normal;
 };
@@ -52,14 +52,19 @@ struct rawbrush
     std::vector<rawplane> rawplanes;
 };
 
+struct Vertex
+{
+    glm::dvec3 pos;
+    double ang;
+};
+
 struct poly
 {
-    std::vector<glm::dvec3> vertexes;
-
+    std::vector<Vertex> vertexes;
+    Plane plane;
     glm::dvec3 normal;
     std::string tex;
     glm::dvec3 center;
-    size_t num;
 };
 
 class brush
@@ -71,8 +76,6 @@ public:
 
 private:
    
-    
-    size_t num;
     std::vector<poly> polys;
     std::vector<GLfloat> vertex_buffer_data;
     std::vector<GLfloat> color_buffer_data;
@@ -81,8 +84,6 @@ private:
     GLuint colorbuffer;
     GLuint elementbuffer;
 
-    //char pad[4];
-
     std::shared_ptr<btConvexHullShape> convexHullShape;
     std::shared_ptr<btDefaultMotionState> groundMotionState;
     std::shared_ptr<btRigidBody> groundRigidBody;
@@ -90,9 +91,9 @@ private:
     
     void create_buffers();
     void order_vertexes();
-    void remove_extra_vertexes(std::vector<plane> &planes);
-    void add_vertexes_to_polys(std::vector<plane> &planes);
-    void create_planes_from_points(rawbrush &b, std::vector<plane> &planes);
+    void remove_extra_vertexes();
+    void add_vertexes_to_polys();
+    void create_planes_from_points(rawbrush &b);
     void scale_vertexes(float scale);
 
 };
