@@ -23,25 +23,25 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 
 struct Plane planepnormal(glm::dvec3 point, glm::dvec3 normal)
 {
-	Plane aux;
-	aux.normal=normal;
-	aux.a=normal.x;
-	aux.b=normal.y;
-	aux.c=normal.z;
-	aux.d=-glm::dot(normal,point);
-	return aux;
+    Plane aux;
+    aux.normal=normal;
+    aux.a=normal.x;
+    aux.b=normal.y;
+    aux.c=normal.z;
+    aux.d=-glm::dot(normal,point);
+    return aux;
 }
 struct Plane plane3points(glm::dvec3 p1, glm::dvec3 p2, glm::dvec3 p3)
 {
     glm::dvec3 aux;
-	aux = glm::normalize(glm::cross(p3 - p1, p2 - p1));
-	return planepnormal(p1,aux);
+    aux = glm::normalize(glm::cross(p3 - p1, p2 - p1));
+    return planepnormal(p1,aux);
 }
 
 int inter2planes(Plane p1, Plane p2, line *l1)
 {
     double s1, s2, a, b;
-	double n1n2dot,n1normsqr,n2normsqr;
+    double n1n2dot,n1normsqr,n2normsqr;
     glm::dvec3 d = glm::cross(p1.normal,p2.normal);
     if (glm::length(d) < 0.0001f) {
         return 0;
@@ -88,23 +88,23 @@ int interlineplane(struct line line1,struct Plane plane1, Vertex &vertex)
 
 int pointinplane(glm::dvec3 point,struct Plane p)
 {
-	double res;
-	res=p.a * point.x + p.b * point.y + p.c * point.z + p.d;
-	if(res<1 && res>-1){
-		return 0;
-	}else{
-		if(res<0){
-			return -1;
-		}else{
-			return 1;
-		}
-	}
+    double res;
+    res=p.a * point.x + p.b * point.y + p.c * point.z + p.d;
+    if(res<1 && res>-1){
+        return 0;
+    }else{
+        if(res<0){
+            return -1;
+        }else{
+            return 1;
+        }
+    }
 }
 
 int comppoints(glm::dvec3 p1, glm::dvec3 p2){
-	if((p1.x > p2.x-1 && p1.x < p2.x+1)&&(p1.y > p2.y-1 && p1.y < p2.y+1)&&(p1.z > p2.z-1 && p1.z < p2.z+1))
-		return 1;
-	return 0;
+    if((p1.x > p2.x-1 && p1.x < p2.x+1)&&(p1.y > p2.y-1 && p1.y < p2.y+1)&&(p1.z > p2.z-1 && p1.z < p2.z+1))
+        return 1;
+    return 0;
 }
 
 constexpr double pi() { return std::atan(1)*4; }
@@ -115,8 +115,8 @@ void brush::create_planes_from_points(rawbrush &b)
     for(rawplane &rp : b.rawplanes){
         poly p;
         p.plane = plane3points(rp.point0, rp.point1, rp.point2);
-		p.normal = p.plane.normal;
-		p.tex = rp.texture_name;
+        p.normal = p.plane.normal;
+        p.tex = rp.texture_name;
         polys.push_back(p);
     }
     
@@ -125,15 +125,15 @@ void brush::create_planes_from_points(rawbrush &b)
 void brush::add_vertexes_to_polys()
 {
     Vertex pointaux;
-	line lineaux;
+    line lineaux;
     for (auto it = polys.begin() ; it != polys.end(); ++it){
         for (auto it2 = it+1 ; it2 != polys.end(); ++it2){
-			if(inter2planes(it->plane,it2->plane,&lineaux)){
+            if(inter2planes(it->plane,it2->plane,&lineaux)){
                 for (auto it3 = polys.begin() ; it3 != polys.end(); ++it3){
                     if(it3!=it && it3!=it2){
-						if(interlineplane(lineaux,it3->plane,pointaux)){
+                        if(interlineplane(lineaux,it3->plane,pointaux)){
                             it3->vertexes.push_back(pointaux);
-						}                        
+                        }                        
                     }
                 }                
             }            
@@ -146,26 +146,26 @@ void brush::remove_extra_vertexes()
     for(poly &p : polys){
         for (auto it = p.vertexes.begin() ; it != p.vertexes.end(); ++it){
             for (auto it2 = it+1 ; it2 != p.vertexes.end(); ++it2){
-				if(comppoints(it->pos,it2->pos)){
+                if(comppoints(it->pos,it2->pos)){
                     p.vertexes.erase(it);
                     it--;
-					break;
-				}
-			}
-		}
-	}
+                    break;
+                }
+            }
+        }
+    }
 
     for (auto it = polys.begin() ; it != polys.end(); ++it){
         for (auto it2 = it->vertexes.begin() ; it2 != it->vertexes.end(); ++it2){
             for (auto it3 = polys.begin() ; it3 != polys.end(); ++it3){
-				if(it3!=it && pointinplane(it2->pos,it3->plane)==1){
+                if(it3!=it && pointinplane(it2->pos,it3->plane)==1){
                     it->vertexes.erase(it2);
-					it2--;
-					break;
-				}
-			}
-		}
-	}
+                    it2--;
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void ordervertexes(struct poly &p)
@@ -220,7 +220,7 @@ void brush::order_vertexes()
 {
     for(poly &p : polys){
         ordervertexes(p);
-	}
+    }
 }
 
 void brush::create_buffers()
