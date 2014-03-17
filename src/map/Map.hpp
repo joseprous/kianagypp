@@ -41,7 +41,7 @@ private:
 public:
     
     entity();
-    entity(std::vector<header> headers, std::vector<rawbrush> rawbrushes);
+    entity(const std::vector<header> &headers, const std::vector<rawbrush> &rawbrushes);
 
     std::vector<header> mHeaders;
     std::vector<rawbrush> mRawbrushes;
@@ -54,11 +54,11 @@ class Map
 {
 public:
     
-    void draw(GLuint programID, glm::mat4 projection, glm::mat4 view);
+    void draw(GLuint programID, const glm::mat4 &projection, const glm::mat4 &view);
     
     std::vector<entity> entities;    
 };
 
-Map load_map(std::string map_file);
+Map load_map(const std::string &map_file);
 
 #endif

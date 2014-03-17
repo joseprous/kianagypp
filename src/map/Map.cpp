@@ -26,7 +26,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 
 entity::entity(){}
 
-entity::entity(std::vector<header> headers, std::vector<rawbrush> rawbrushes)
+entity::entity(const std::vector<header> &headers, const std::vector<rawbrush> &rawbrushes)
 {
     mHeaders = headers;
     mRawbrushes = rawbrushes;
@@ -41,7 +41,7 @@ void entity::load_brushes(dynamicsWorldSP dynamicsWorld, float scale)
         mBrushes.push_back(aux);        
     }
 }
-void Map::draw(GLuint programID, glm::mat4 projection, glm::mat4 view)
+void Map::draw(GLuint programID, const glm::mat4 &projection, const glm::mat4 &view)
 {
     glm::mat4 Model      = glm::mat4(1.0f);  // Changes for each model !
 
@@ -62,7 +62,7 @@ void Map::draw(GLuint programID, glm::mat4 projection, glm::mat4 view)
     }    
 }
 
-Map load_map(std::string map_file)
+Map load_map(const std::string &map_file)
 {
     Map_Driver driver;
     driver.parse (map_file.c_str());                

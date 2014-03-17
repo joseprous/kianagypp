@@ -52,7 +52,7 @@ Cube::Cube(GLuint programID, float size, glm::vec3 position)
 void printVec3(std::string name, glm::vec3 v);
 
 
-void Cube::Draw(glm::mat4 projection, glm::mat4 view)
+void Cube::Draw(const glm::mat4 &projection, const glm::mat4 &view)
 {
     // Model matrix : an identity matrix (model will be at the origin)
     glm::mat4 Model      = glm::mat4(1.0f);  // Changes for each model !

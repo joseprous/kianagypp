@@ -132,7 +132,7 @@ private:
 public:
     
     Cube(GLuint programID, float size, glm::vec3 position);
-    void Draw(glm::mat4 projection, glm::mat4 view);
+    void Draw(const glm::mat4 &projection, const glm::mat4 &view);
     void MoveForward(float distance);
 };
 

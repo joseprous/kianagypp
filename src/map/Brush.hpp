@@ -71,7 +71,7 @@ class brush
 {
 public:
     
-    void load(dynamicsWorldSP dynamicsWorld, rawbrush &rb, float scale);
+    void load(dynamicsWorldSP dynamicsWorld,const rawbrush &rb, float scale);
     void draw();
 
 private:
@@ -93,7 +93,7 @@ private:
     void order_vertexes();
     void remove_extra_vertexes();
     void add_vertexes_to_polys();
-    void create_planes_from_points(rawbrush &b);
+    void create_planes_from_points(const rawbrush &b);
     void scale_vertexes(float scale);
 
 };

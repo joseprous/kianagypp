@@ -30,7 +30,7 @@ public:
     Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
     glm::mat4 GetViewMatrix();
 
-    void lookAt(glm::vec3 position);
+    void lookAt(const glm::vec3 &position);
     
     void RotateX(float angle) override;
     void RotateY(float angle) override;    

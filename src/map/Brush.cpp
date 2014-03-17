@@ -21,7 +21,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include "Brush.hpp"
 #include <algorithm>
 
-struct Plane planepnormal(glm::dvec3 point, glm::dvec3 normal)
+Plane planepnormal(const glm::dvec3 &point, const glm::dvec3 &normal)
 {
     Plane aux;
     aux.normal=normal;
@@ -31,14 +31,14 @@ struct Plane planepnormal(glm::dvec3 point, glm::dvec3 normal)
     aux.d=-glm::dot(normal,point);
     return aux;
 }
-struct Plane plane3points(glm::dvec3 p1, glm::dvec3 p2, glm::dvec3 p3)
+Plane plane3points(const glm::dvec3 &p1, const glm::dvec3 &p2, const glm::dvec3 &p3)
 {
     glm::dvec3 aux;
     aux = glm::normalize(glm::cross(p3 - p1, p2 - p1));
     return planepnormal(p1,aux);
 }
 
-int inter2planes(Plane p1, Plane p2, line *l1)
+int inter2planes(const Plane &p1, const Plane &p2, line *l1)
 {
     double s1, s2, a, b;
     double n1n2dot,n1normsqr,n2normsqr;
@@ -69,24 +69,24 @@ double dabs(double n)
     return n;
 }
 
-int interlineplane(struct line line1,struct Plane plane1, Vertex &vertex)
+bool interlineplane(const line &line1, const Plane &plane1, Vertex &vertex)
 {
     // Check for (near) parallel line and plane
     double denominator = glm::dot(line1.dir, plane1.normal);
     if (dabs(denominator) < 0.0001f) {
-        return 0;
+        return false;
     }
 
 // Nonparallel, so compute intersection
     double t = -(plane1.a * line1.point.x + plane1.b * line1.point.y + plane1.c * line1.point.z + plane1.d);
     t = t / denominator;
     vertex.pos = line1.point + t * line1.dir;
-    return 1;
+    return true;
 }
 
 
 
-int pointinplane(glm::dvec3 point,struct Plane p)
+int pointinplane(const glm::dvec3 &point, const Plane &p)
 {
     double res;
     res=p.a * point.x + p.b * point.y + p.c * point.z + p.d;
@@ -101,18 +101,18 @@ int pointinplane(glm::dvec3 point,struct Plane p)
     }
 }
 
-int comppoints(glm::dvec3 p1, glm::dvec3 p2){
+bool comppoints(const glm::dvec3 &p1, const glm::dvec3 &p2){
     if((p1.x > p2.x-1 && p1.x < p2.x+1)&&(p1.y > p2.y-1 && p1.y < p2.y+1)&&(p1.z > p2.z-1 && p1.z < p2.z+1))
-        return 1;
-    return 0;
+        return true;
+    return false;
 }
 
 constexpr double pi() { return std::atan(1)*4; }
 
 
-void brush::create_planes_from_points(rawbrush &b)
+void brush::create_planes_from_points(const rawbrush &rb)
 {
-    for(rawplane &rp : b.rawplanes){
+    for(const rawplane &rp : rb.rawplanes){
         poly p;
         p.plane = plane3points(rp.point0, rp.point1, rp.point2);
         p.normal = p.plane.normal;
@@ -168,7 +168,7 @@ void brush::remove_extra_vertexes()
     }
 }
 
-void ordervertexes(struct poly &p)
+void ordervertexes(poly &p)
 {
     glm::dvec3 centro,p1,p2;
     Vertex vertexAux;
@@ -278,7 +278,7 @@ void brush::scale_vertexes(float scale)
     }
 }
 
-void brush::load(dynamicsWorldSP dynamicsWorld, rawbrush &rb, float scale)
+void brush::load(dynamicsWorldSP dynamicsWorld, const rawbrush &rb, float scale)
 {
     create_planes_from_points(rb);
 

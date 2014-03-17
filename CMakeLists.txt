@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(kianagy++)
 
 SET (CMAKE_CXX_COMPILER           "/usr/bin/clang++")
-SET (CMAKE_CXX_FLAGS              "-std=c++11 -g -fno-omit-frame-pointer -Weverything -Werror -Wno-c++98-compat -Wno-missing-prototypes -Wno-padded")
+SET (CMAKE_CXX_FLAGS              "-std=c++11 -g -fno-omit-frame-pointer -Weverything -Werror -Wno-c++98-compat -Wno-missing-prototypes -Wno-padded -Wno-unused-parameter")
 
 find_package(GLEW REQUIRED)
 
