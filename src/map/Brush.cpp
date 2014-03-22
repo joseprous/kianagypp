@@ -117,19 +117,19 @@ void brush::create_planes_from_points(const rawbrush &rb)
         p.plane = plane3points(rp.point0, rp.point1, rp.point2);
         p.normal = p.plane.normal;
         p.tex = rp.texture_name;
-        polys.push_back(p);
+        mesh.push_back(p);
     }
     
 }
 
-void brush::add_vertexes_to_polys()
+void brush::add_vertexes_to_mesh()
 {
     Vertex pointaux;
     line lineaux;
-    for (auto it = polys.begin() ; it != polys.end(); ++it){
-        for (auto it2 = it+1 ; it2 != polys.end(); ++it2){
+    for (auto it = mesh.begin() ; it != mesh.end(); ++it){
+        for (auto it2 = it+1 ; it2 != mesh.end(); ++it2){
             if(inter2planes(it->plane,it2->plane,&lineaux)){
-                for (auto it3 = polys.begin() ; it3 != polys.end(); ++it3){
+                for (auto it3 = mesh.begin() ; it3 != mesh.end(); ++it3){
                     if(it3!=it && it3!=it2){
                         if(interlineplane(lineaux,it3->plane,pointaux)){
                             it3->vertexes.push_back(pointaux);
@@ -143,7 +143,7 @@ void brush::add_vertexes_to_polys()
 
 void brush::remove_extra_vertexes()
 {
-    for(poly &p : polys){
+    for(poly &p : mesh){
         for (auto it = p.vertexes.begin() ; it != p.vertexes.end(); ++it){
             for (auto it2 = it+1 ; it2 != p.vertexes.end(); ++it2){
                 if(comppoints(it->pos,it2->pos)){
@@ -155,9 +155,9 @@ void brush::remove_extra_vertexes()
         }
     }
 
-    for (auto it = polys.begin() ; it != polys.end(); ++it){
+    for (auto it = mesh.begin() ; it != mesh.end(); ++it){
         for (auto it2 = it->vertexes.begin() ; it2 != it->vertexes.end(); ++it2){
-            for (auto it3 = polys.begin() ; it3 != polys.end(); ++it3){
+            for (auto it3 = mesh.begin() ; it3 != mesh.end(); ++it3){
                 if(it3!=it && pointinplane(it2->pos,it3->plane)==1){
                     it->vertexes.erase(it2);
                     it2--;
@@ -218,7 +218,7 @@ void ordervertexes(poly &p)
 
 void brush::order_vertexes()
 {
-    for(poly &p : polys){
+    for(poly &p : mesh){
         ordervertexes(p);
     }
 }
@@ -226,7 +226,7 @@ void brush::order_vertexes()
 void brush::create_buffers()
 {
     GLuint elem=0;
-    for(poly &p : polys){
+    for(poly &p : mesh){
         glm::dvec3 v0 = p.vertexes[0].pos;
         glm::dvec3 v;
         for (auto it = p.vertexes.begin()+2 ; it != p.vertexes.end(); ++it){
@@ -251,7 +251,7 @@ void brush::create_buffers()
                 color_buffer_data.push_back(1);
             }
         }
-
+    }
         GLfloat *vertex_buffer_datap = vertex_buffer_data.data();
         GLfloat *color_buffer_datap = color_buffer_data.data();
         GLuint *element_buffer_datap = element_buffer_data.data();
@@ -267,11 +267,11 @@ void brush::create_buffers()
         glGenBuffers(1, &(elementbuffer));
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLfloat)*element_buffer_data.size(), element_buffer_datap, GL_STATIC_DRAW);
-    }
+    
 }
 void brush::scale_vertexes(float scale)
 {
-    for(poly &p : polys){
+    for(poly &p : mesh){
         for(Vertex &v : p.vertexes){
             v.pos *= scale;
         }
@@ -282,7 +282,7 @@ void brush::load(dynamicsWorldSP dynamicsWorld, const rawbrush &rb, float scale)
 {
     create_planes_from_points(rb);
 
-    add_vertexes_to_polys();
+    add_vertexes_to_mesh();
 
     remove_extra_vertexes();
 
@@ -293,7 +293,7 @@ void brush::load(dynamicsWorldSP dynamicsWorld, const rawbrush &rb, float scale)
     create_buffers();
 
     convexHullShape = std::make_shared<btConvexHullShape>();
-    for(poly &p : polys){
+    for(poly &p : mesh){
         for(Vertex &v : p.vertexes){
             convexHullShape->addPoint(btVector3((GLfloat)v.pos.x,(GLfloat)v.pos.y,(GLfloat)v.pos.z));
         }

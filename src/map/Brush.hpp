@@ -67,16 +67,19 @@ struct poly
     glm::dvec3 center;
 };
 
+typedef std::vector<poly> Mesh;
+
 class brush
 {
 public:
     
     void load(dynamicsWorldSP dynamicsWorld,const rawbrush &rb, float scale);
     void draw();
+    const Mesh& getMesh() const {return mesh;}
 
 private:
    
-    std::vector<poly> polys;
+    Mesh mesh;
     std::vector<GLfloat> vertex_buffer_data;
     std::vector<GLfloat> color_buffer_data;
     std::vector<GLuint> element_buffer_data;    
@@ -92,7 +95,7 @@ private:
     void create_buffers();
     void order_vertexes();
     void remove_extra_vertexes();
-    void add_vertexes_to_polys();
+    void add_vertexes_to_mesh();
     void create_planes_from_points(const rawbrush &b);
     void scale_vertexes(float scale);
 
