@@ -6,6 +6,8 @@
 #include <type_traits>
 #include <initializer_list>
 
+#include "Logger.hpp"
+
 #include "PositionPart.hpp"
 #include "MeshPart.hpp"
 #include "OpenGLMeshPart.hpp"
@@ -48,8 +50,10 @@ public:
     bool has(Entity entity, Parts part);
 };
 
-Entity createPlayer(EntityManager &em, glm::vec3 position);
-Entity createBrush(EntityManager &em, const brush &b);
+typedef std::shared_ptr<EntityManager> EntityManagerSP;
+
+Entity createPlayer(EntityManagerSP em, glm::vec3 position);
+Entity createBrush(EntityManagerSP em, const brush &b);
 
 
 #endif

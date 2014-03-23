@@ -5,10 +5,24 @@
 #include <algorithm>
 #include <string>
 
-RendererSystem::RendererSystem(EntityManager *em)
-    :EM(em)
+RenderSystem::RenderSystem(EntityManagerSP em, uint32_t period)
+    :EM(em),
+     mLast_ticks(0),
+     mPeriod(period)
 {
+    glewExperimental = GL_TRUE; 
+    glewInit();
+
+    // Enable depth test
+    glEnable(GL_DEPTH_TEST);
+    // Accept fragment if it closer to the camera than the former one
+    glDepthFunc(GL_LESS);
+
+    GLuint VertexArrayID;
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
     
+    Log("RenderSystem::RenderSystem");
 }
 
 void draw(OpenGLMeshPart *part)
@@ -152,9 +166,23 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
     return ProgramID;
 }
 
-
-void RendererSystem::update()
+GLuint GetShaderProgram(const OpenGLShadersPart &shaders, std::map<std::string, GLuint> &mGLPrograms)
 {
+    if(mGLPrograms.count(shaders.key)==0){
+        mGLPrograms[shaders.key] =
+            LoadShaders(shaders.vertexShaderPath.c_str(),
+                        shaders.fragmentShaderPath.c_str(),
+                        shaders.geometryShaderPath.c_str()
+                );
+    }
+    return mGLPrograms[shaders.key];
+}
+
+
+void RenderSystem::update(uint32_t ticks)
+{
+    if(ticks <= mLast_ticks + mPeriod) return;
+        
     glm::mat4 view;
 
     for(size_t entity = 0; entity < EM->size; entity++){
@@ -166,25 +194,22 @@ void RendererSystem::update()
             }
         }
     }
-   
+
+    glClearColor(0.0f,0.0f,0.5f,1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     
     glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
     for(size_t entity = 0; entity < EM->size; entity++){
         if(EM->has(entity,Parts::GLShaders)){
             auto &shaders = EM->glShaders[entity];
-            if(mGLPrograms.count(shaders.key)==0){
-                mGLPrograms[shaders.key] =
-                    LoadShaders(shaders.vertexShaderPath.c_str(),
-                                shaders.fragmentShaderPath.c_str(),
-                                shaders.geometryShaderPath.c_str()
-                        );
-            }
 
             if(EM->has(entity,Parts::GLMesh)){
                 auto &mesh = EM->glMesh[entity];
 
-                GLuint programId = mGLPrograms[shaders.key];
-                
+                GLuint programId = GetShaderProgram(shaders,mGLPrograms);
+                glUseProgram(programId);
+
                 glm::mat4 Model      = glm::mat4(1.0f);
 
                 glm::mat4 MVP        = projection * view * Model;
@@ -202,4 +227,8 @@ void RendererSystem::update()
             }
         }
     }
+    
+    SDL_GL_SwapWindow(window);
+
+    mLast_ticks = ticks;
 }

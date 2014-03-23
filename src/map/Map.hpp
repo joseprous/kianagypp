@@ -25,7 +25,6 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <glm/glm.hpp>
 #include <GL/glew.h>
-#include "Physics.hpp"
 #include "Brush.hpp"
 
 struct header
@@ -47,14 +46,12 @@ public:
     std::vector<rawbrush> mRawbrushes;
     std::vector<brush> mBrushes;
 
-    void load_brushes(dynamicsWorldSP dynamicsWorld, float scale);
+    void load_brushes(float scale);
 };
 
 class Map
 {
 public:
-    
-    void draw(GLuint programID, const glm::mat4 &projection, const glm::mat4 &view);
     
     std::vector<entity> entities;    
 };

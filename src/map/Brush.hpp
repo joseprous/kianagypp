@@ -73,8 +73,7 @@ class brush
 {
 public:
     
-    void load(dynamicsWorldSP dynamicsWorld,const rawbrush &rb, float scale);
-    void draw();
+    void load(const rawbrush &rb, float scale);
     const Mesh& getMesh() const {return mesh;}
 
 private:

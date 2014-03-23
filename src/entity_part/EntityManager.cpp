@@ -2,13 +2,13 @@
 
 #include <glm/gtx/quaternion.hpp>
 
-Entity createPlayer(EntityManager &em, glm::vec3 position)
+Entity createPlayer(EntityManagerSP em, glm::vec3 position)
 {
-    Entity player = em.addEntity();
-    em.attach(player, {Parts::Position, Parts::Camera});
+    Entity player = em->addEntity();
+    em->attach(player, {Parts::Position, Parts::Camera});
 
-    em.position[player] = {position, glm::vec3(0,0,1), glm::vec3(0,1,0), glm::angleAxis(0.0f,glm::vec3(0,0,1))};
-    em.camera[player] = {glm::vec3(10,10,10)};
+    em->position[player] = {position, glm::vec3(0,0,1), glm::vec3(0,1,0), glm::angleAxis(0.0f,glm::vec3(0,0,1))};
+    em->camera[player] = {glm::vec3(10,10,10)};
 
     return player;
 }
@@ -63,7 +63,7 @@ OpenGLMeshPart create_glmesh(const Mesh &mesh)
 }
 
 
-CollisionPart create_collision(const Mesh &mesh)
+CollisionPart create_collision_part(const Mesh &mesh)
 {
     CollisionPart collision;
     collision.convexHullShape = std::make_shared<btConvexHullShape>();
@@ -80,16 +80,16 @@ CollisionPart create_collision(const Mesh &mesh)
     return collision;
 }
 
-Entity createBrush(EntityManager &em, const brush &b)
+Entity createBrush(EntityManagerSP em, const brush &b)
 {
-    Entity brush = em.addEntity();
-    em.attach(brush, {Parts::Mesh, Parts::GLShaders, Parts::GLMesh, Parts::Collision});
+    Entity brush = em->addEntity();
+    em->attach(brush, {Parts::Mesh, Parts::GLShaders, Parts::GLMesh, Parts::Collision});
 
-    em.mesh[brush] = {b.getMesh()};
-    em.glShaders[brush] = {"shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom", "wireframe" };
+    em->mesh[brush] = {b.getMesh()};
+    em->glShaders[brush] = {"shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom", "wireframe" };
 
-    em.glMesh[brush] = create_glmesh(b.getMesh());
-    em.collision[brush] = create_collision(b.getMesh());
+    em->glMesh[brush] = create_glmesh(b.getMesh());
+    em->collision[brush] = create_collision_part(b.getMesh());
 
     return brush;
 }

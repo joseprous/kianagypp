@@ -278,7 +278,7 @@ void brush::scale_vertexes(float scale)
     }
 }
 
-void brush::load(dynamicsWorldSP dynamicsWorld, const rawbrush &rb, float scale)
+void brush::load(const rawbrush &rb, float scale)
 {
     create_planes_from_points(rb);
 
@@ -290,58 +290,6 @@ void brush::load(dynamicsWorldSP dynamicsWorld, const rawbrush &rb, float scale)
 
     scale_vertexes(scale);
 
-    create_buffers();
-
-    convexHullShape = std::make_shared<btConvexHullShape>();
-    for(poly &p : mesh){
-        for(Vertex &v : p.vertexes){
-            convexHullShape->addPoint(btVector3((GLfloat)v.pos.x,(GLfloat)v.pos.y,(GLfloat)v.pos.z));
-        }
-    }
-    groundMotionState = std::make_shared<btDefaultMotionState>();
-
-    btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0,groundMotionState.get(),convexHullShape.get(),btVector3(0,0,0));
-
-    groundRigidBody = std::make_shared<btRigidBody>(groundRigidBodyCI);
-    dynamicsWorld->addRigidBody(groundRigidBody.get());
-
+    //create_buffers();
 }
 
-void brush::draw()
-{
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(
-        0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-        3,                  // size
-        GL_FLOAT,           // type
-        GL_FALSE,           // normalized?
-        0,                  // stride
-        (void*)0            // array buffer offset
-        );
-
-
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-    glVertexAttribPointer(
-        1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-        3,                                // size
-        GL_FLOAT,                         // type
-        GL_FALSE,                         // normalized?
-        0,                                // stride
-        (void*)0                          // array buffer offset
-        );
-    // Index buffer
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-
-    // Draw the triangles !
-    glDrawElements(
-        GL_TRIANGLES,      // mode
-        (GLsizei)element_buffer_data.size(),    // count
-        GL_UNSIGNED_INT,   // type
-        (void*)0           // element array buffer offset
-        );
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-}

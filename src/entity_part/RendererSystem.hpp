@@ -5,18 +5,23 @@
 
 #include <tuple>
 #include <map>
+#include <SDL2/SDL.h>
 
-class RendererSystem
+class RenderSystem
 {
 private:
     
-    EntityManager *EM;
     std::map<std::string, GLuint> mGLPrograms;
 
+    EntityManagerSP EM;
+    uint32_t mLast_ticks;
+    uint32_t mPeriod;
 public:
 
-    RendererSystem(EntityManager *em);
-    void update();
+    SDL_Window* window;
+
+    RenderSystem(EntityManagerSP em,uint32_t period);
+    void update(uint32_t ticks);
 };
 
 #endif

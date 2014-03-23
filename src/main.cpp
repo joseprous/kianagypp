@@ -18,27 +18,12 @@ You should have received a copy of the GNU General Public License
 along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <string>
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <algorithm>
 #include <SDL2/SDL.h>
+#include <iostream>
 #include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/rotate_vector.hpp>
 
-#include <memory>
-#include <bullet/btBulletDynamicsCommon.h>
-
-#include "entities/Camera.hpp"
-#include "entities/Cube.hpp"
+#include "entity_part/Game.hpp"
 #include "map/Map.hpp"
-#include "entities/Player.hpp"
-using namespace glm;
-
-GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path,const char * geometry_file_path);
 
 SDL_Window* init_sdl()
 {
@@ -77,8 +62,6 @@ SDL_Window* init_sdl()
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
     
-    glewExperimental = GL_TRUE; 
-    glewInit();
     return window;
 }
 
@@ -93,140 +76,21 @@ int main(int argc, char **argv)
     
     window = init_sdl();
 
-    // Enable depth test
-    glEnable(GL_DEPTH_TEST);
-    // Accept fragment if it closer to the camera than the former one
-    glDepthFunc(GL_LESS);
-
-    GLuint VertexArrayID;
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
-
-
-
-    auto broadphase = std::make_shared<btDbvtBroadphase>();
-        
-    auto collisionConfiguration = std::make_shared<btDefaultCollisionConfiguration>();
-    auto dispatcher = std::make_shared<btCollisionDispatcher>(collisionConfiguration.get());
-
-    auto solver = std::make_shared<btSequentialImpulseConstraintSolver>();
-
-    auto dynamicsWorld = std::make_shared<btDiscreteDynamicsWorld>(dispatcher.get(),broadphase.get(),solver.get(),collisionConfiguration.get());
-
-    dynamicsWorld->setGravity(btVector3(0,0,-10));
-
     Map map = load_map(argv[1]);
 
     float scale = 0.01f;
-    map.entities[0].load_brushes(dynamicsWorld, scale);
+    map.entities[0].load_brushes(scale);
     
-    // Create and compile our GLSL program from the shaders
-    GLuint programID = LoadShaders( "shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom" );
-
     glm::vec3 start_pos(1600*scale,1232*scale,600*scale);
+
+    Game game;
+    game.renderSystem.window = window;
+    createPlayer(game.EM,start_pos);
     
-    Player player1(dynamicsWorld, programID, 25*scale, start_pos);
-
-    glm::vec3 camera_pos = start_pos + glm::vec3(0*scale,-300*scale,100*scale);
-    glm::vec3 camera_dir = glm::vec3(1,0,0);
-        
-    Camera camera( camera_pos, camera_dir,glm::vec3(0,0,1));
-    camera.lookAt(player1.getPosition() + glm::vec3(100*scale,0*scale,-200*scale));
-    
-    //Camera camera(glm::vec3(0,5,0), glm::vec3(1,0,0),glm::vec3(0,0,1));
-    
-    SDL_Event windowEvent;
-    Uint32 gticks2;
-    bool quit = false;
-    gticks2 = SDL_GetTicks();
-    while(!quit) {
-        while(SDL_PollEvent(&windowEvent)) {
-            SDL_Keysym keysym;
-            switch (windowEvent.type){
-            case SDL_QUIT:
-                quit = true;
-                break;
-            case SDL_KEYDOWN:
-                keysym = windowEvent.key.keysym;
-                switch (keysym.sym) {
-                case SDLK_ESCAPE:
-                    quit = true;
-                    break;
-                case SDLK_d:
-                    camera.MoveRight(10*scale);
-                    break;
-                case SDLK_a:  
-                    camera.MoveLeft(10*scale);
-                    break;
-                case SDLK_w:    
-                    camera.MoveForward(10*scale);
-                    break;
-                case SDLK_s:    
-                    camera.MoveBackward(10*scale);
-                    break;
-                case SDLK_q:    
-                    camera.MoveUp(10*scale);
-                    break;
-                case SDLK_e:    
-                    camera.MoveDown(10*scale);
-                    break;
-                case SDLK_LEFT:
-                    break;
-                case SDLK_RIGHT:
-                    break;
-                case SDLK_UP:
-                    break;
-                case SDLK_DOWN:
-                    break;
-                }
-                break;
-            case SDL_KEYUP:
-                break;
-            case SDL_MOUSEMOTION:
-
-                float angleX = windowEvent.motion.xrel * (-1);
-                float angleY = windowEvent.motion.yrel * (-1);
-                
-                camera.RotateX(angleX);
-                camera.RotateY(angleY);
-                break;
-            }
-        }
-        glClearColor(0.0f,0.0f,0.5f,1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glUseProgram(programID);
-
-        // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-        glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
-        // Camera matrix
-        glm::mat4 View       = camera.GetViewMatrix();
-
-        map.draw(programID, Projection, View);
-
-        player1.Draw(Projection, View);
-        
-        SDL_GL_SwapWindow(window);
-        if(SDL_GetTicks()>gticks2+17){
-            dynamicsWorld->stepSimulation(1/60.f,10);
-
-            
-            btTransform trans;
-            player1.fallRigidBody->getMotionState()->getWorldTransform(trans);
-            auto pos = trans.getOrigin();
-            player1.setPosition(glm::vec3(pos.getX(),pos.getY(),pos.getZ()));
-            auto rot = trans.getRotation();
-            auto axis = rot.getAxis ();
-            auto angle = rot.getAngle();
-            glm::quat q = glm::angleAxis (degrees(angle), glm::vec3(axis.getX(),axis.getY(),axis.getZ()));
-
-            //           std::cout << "angle: " << angle << " axis: " << axis.getX() << "," << axis.getY() << "," << axis.getZ() << std::endl;
-            
-            player1.setOrientation(q);
-            
-            gticks2=SDL_GetTicks();
-        }
+    for(const brush &b : map.entities[0].mBrushes){
+        createBrush(game.EM,b);
     }
-	SDL_Quit();
 
-	return 0;
+    game.loop();
+
 }
