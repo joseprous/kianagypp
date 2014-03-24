@@ -24,8 +24,6 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <vector>
 #include <string>
 #include <glm/glm.hpp>
-#include <GL/glew.h>
-#include "Physics.hpp"
 
 struct line{
     glm::dvec3 dir;
@@ -79,19 +77,7 @@ public:
 private:
    
     Mesh mesh;
-    std::vector<GLfloat> vertex_buffer_data;
-    std::vector<GLfloat> color_buffer_data;
-    std::vector<GLuint> element_buffer_data;    
-    GLuint vertexbuffer;
-    GLuint colorbuffer;
-    GLuint elementbuffer;
-
-    std::shared_ptr<btConvexHullShape> convexHullShape;
-    std::shared_ptr<btDefaultMotionState> groundMotionState;
-    std::shared_ptr<btRigidBody> groundRigidBody;
     
-    
-    void create_buffers();
     void order_vertexes();
     void remove_extra_vertexes();
     void add_vertexes_to_mesh();

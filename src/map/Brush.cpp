@@ -223,52 +223,6 @@ void brush::order_vertexes()
     }
 }
 
-void brush::create_buffers()
-{
-    GLuint elem=0;
-    for(poly &p : mesh){
-        glm::dvec3 v0 = p.vertexes[0].pos;
-        glm::dvec3 v;
-        for (auto it = p.vertexes.begin()+2 ; it != p.vertexes.end(); ++it){
-            vertex_buffer_data.push_back((GLfloat)v0.x);
-            vertex_buffer_data.push_back((GLfloat)v0.y);
-            vertex_buffer_data.push_back((GLfloat)v0.z);
-            element_buffer_data.push_back(elem++);
-
-            v = (it-1)->pos;
-            vertex_buffer_data.push_back((GLfloat)v.x);
-            vertex_buffer_data.push_back((GLfloat)v.y);
-            vertex_buffer_data.push_back((GLfloat)v.z);
-            element_buffer_data.push_back(elem++);
-
-            v = it->pos;
-            vertex_buffer_data.push_back((GLfloat)v.x);
-            vertex_buffer_data.push_back((GLfloat)v.y);
-            vertex_buffer_data.push_back((GLfloat)v.z);
-            element_buffer_data.push_back(elem++);
-
-            for(int k=0;k<9;k++){
-                color_buffer_data.push_back(1);
-            }
-        }
-    }
-        GLfloat *vertex_buffer_datap = vertex_buffer_data.data();
-        GLfloat *color_buffer_datap = color_buffer_data.data();
-        GLuint *element_buffer_datap = element_buffer_data.data();
-
-        glGenBuffers(1, &(vertexbuffer));
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*vertex_buffer_data.size(), vertex_buffer_datap, GL_STATIC_DRAW);
-
-        glGenBuffers(1, &(colorbuffer));
-        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*color_buffer_data.size(), color_buffer_datap, GL_STATIC_DRAW);
-
-        glGenBuffers(1, &(elementbuffer));
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLfloat)*element_buffer_data.size(), element_buffer_datap, GL_STATIC_DRAW);
-    
-}
 void brush::scale_vertexes(float scale)
 {
     for(poly &p : mesh){
@@ -289,7 +243,5 @@ void brush::load(const rawbrush &rb, float scale)
     order_vertexes();
 
     scale_vertexes(scale);
-
-    //create_buffers();
 }
 
