@@ -1,9 +1,6 @@
 #include "PhysicsSystem.hpp"
 
-PhysicsSystem::PhysicsSystem(EntityManagerSP em,uint32_t period)
-    :EM(em),
-     mLast_ticks(0),
-     mPeriod(period)
+void PhysicsSystem::init()
 {
     auto broadphase = std::make_shared<btDbvtBroadphase>();
         
@@ -19,9 +16,7 @@ PhysicsSystem::PhysicsSystem(EntityManagerSP em,uint32_t period)
     Log("PhysicsSystem::PhysicsSystem");
 }
 
-void PhysicsSystem::update(uint32_t ticks)
+void PhysicsSystem::update()
 {
-    if(ticks <= mLast_ticks + mPeriod) return;
-
-    mLast_ticks = ticks;
+    
 }

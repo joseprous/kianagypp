@@ -1,18 +1,13 @@
 #include "InputSystem.hpp"
 #include <SDL2/SDL.h>
 
-InputSystem::InputSystem(EntityManagerSP em,uint32_t period)
-    :EM(em),
-     mLast_ticks(0),
-     mPeriod(period)
+void InputSystem::init()
 {
-    Log("InputSystem::InputSystem");
+    Log("InputSystem::InputSystem");    
 }
 
-void InputSystem::update(uint32_t ticks)
+void InputSystem::update()
 {
-    if(ticks <= mLast_ticks + mPeriod) return;
-
     SDL_Event windowEvent;
     while(SDL_PollEvent(&windowEvent)) {
         SDL_Keysym keysym;
@@ -70,7 +65,4 @@ void InputSystem::update(uint32_t ticks)
             break;
         }
     }
-
-    
-    mLast_ticks = ticks;
 }

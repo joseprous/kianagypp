@@ -96,28 +96,27 @@ Entity createBrush(EntityManagerSP em, const brush &b)
 
 Entity EntityManager::addEntity()
 {
-    for(Entity i=0;i<partMask.size();i++)
-    {
-        if(partMask[i].none()){
-            return i;
+    Entity entity;
+    if(available_entities.empty()){
+        if(entities.empty()){
+            entity = 0;
+        }else{
+            entity = *entities.rbegin() + 1;
         }
+    }else{
+        auto it = available_entities.begin();
+        entity = *it;
+        available_entities.erase(it);
     }
-    partMask.emplace_back();
-    position.emplace_back();
-    mesh.emplace_back();
-    glMesh.emplace_back();
-    collision.emplace_back();
-    glShaders.emplace_back();
-    camera.emplace_back();
-
-    size = partMask.size();
+    entities.insert(entity);
     
-    return size - 1;
+    return entity;
 }
 
 void EntityManager::removeEntity(Entity entity)
 {
-    partMask[entity].reset();
+    available_entities.insert(entity);
+    entities.erase(entity);
 }
 
 void EntityManager::attach(Entity entity, std::initializer_list<Parts> parts)

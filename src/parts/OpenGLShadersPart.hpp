@@ -1,7 +1,6 @@
 #ifndef OPENGLSHADERSPART_HPP
 #define OPENGLSHADERSPART_HPP
 
-#include <GL/gl.h>
 #include <string>
 
 struct OpenGLShadersPart

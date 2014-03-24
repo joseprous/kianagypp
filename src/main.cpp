@@ -22,7 +22,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 #include <GL/glew.h>
 
-#include "entity_part/Game.hpp"
+#include "Game.hpp"
 #include "map/Map.hpp"
 
 SDL_Window* init_sdl()

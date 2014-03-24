@@ -2,9 +2,9 @@
 #define GAME_HPP
 
 #include "EntityManager.hpp"
-#include "RendererSystem.hpp"
-#include "PhysicsSystem.hpp"
-#include "InputSystem.hpp"
+#include "systems/RendererSystem.hpp"
+#include "systems/PhysicsSystem.hpp"
+#include "systems/InputSystem.hpp"
 
 class Game
 {
