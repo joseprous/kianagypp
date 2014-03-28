@@ -18,35 +18,46 @@ You should have received a copy of the GNU General Public License
 along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RENDERERSYSTEM_HPP
-#define RENDERERSYSTEM_HPP
+#ifndef SIGNALSMANAGER_HPP
+#define SIGNALSMANAGER_HPP
 
-#include "EntityManager.hpp"
-#include "System.hpp"
-#include "ShaderManager.hpp"
+#include <memory>
+#include <set>
+#include "Signals.hpp"
 
-#include <tuple>
-#include <map>
-#include <SDL2/SDL.h>
 
-class RenderSystem : public System
-{
-private:
-    
-    ShaderManager SM;
-
-    bool getCamera(glm::mat4 &view);
-
+class SignalsManager 
+{     
 public:
 
-    SDL_Window* window;
+    void send(Signals signal);
 
-    RenderSystem(EntityManagerSP em, SignalsManagerSP sigm, uint32_t period)
-        :System(em,sigm,period){}
+    template<typename T>
+    void send(Signals signal, T value);
     
-    void init() override;
-    void update() override;
-    using System::update;
+    bool receive(Signals signal);
+
+    template<typename T>
+    bool receive(Signals signal, T &value);
+
+private:
+    std::set<Signals> signals;
 };
 
-#endif
+typedef std::shared_ptr<SignalsManager> SignalsManagerSP;
+
+
+template<typename T>
+void SignalsManager::send(Signals signal, T value)
+{
+    
+}
+
+template<typename T>
+bool SignalsManager::receive(Signals signal, T &value)
+{
+    return false;
+}
+
+
+#endif // SIGNALSMANAGER_HPP

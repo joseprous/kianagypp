@@ -25,16 +25,21 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include "systems/RendererSystem.hpp"
 #include "systems/PhysicsSystem.hpp"
 #include "systems/InputSystem.hpp"
+#include "systems/GameSystem.hpp"
+
+#include "SignalsManager.hpp"
 
 class Game
 {
 public:
     
     EntityManagerSP EM;
-
+    SignalsManagerSP SigM;
+    
     InputSystem inputSystem;
-    RenderSystem renderSystem;
+    GameSystem gameSystem;
     PhysicsSystem physicsSystem;
+    RenderSystem renderSystem;
 
     Game();
     [[noreturn]] void loop();

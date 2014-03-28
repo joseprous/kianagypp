@@ -18,34 +18,22 @@ You should have received a copy of the GNU General Public License
 along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RENDERERSYSTEM_HPP
-#define RENDERERSYSTEM_HPP
+#ifndef GAMESYSTEM_HPP
+#define GAMESYSTEM_HPP
 
-#include "EntityManager.hpp"
 #include "System.hpp"
-#include "ShaderManager.hpp"
+#include "EntityManager.hpp"
 
-#include <tuple>
-#include <map>
-#include <SDL2/SDL.h>
-
-class RenderSystem : public System
+class GameSystem : public System
 {
-private:
-    
-    ShaderManager SM;
-
-    bool getCamera(glm::mat4 &view);
-
 public:
 
-    SDL_Window* window;
-
-    RenderSystem(EntityManagerSP em, SignalsManagerSP sigm, uint32_t period)
+    GameSystem(EntityManagerSP em,SignalsManagerSP sigm,uint32_t period)
         :System(em,sigm,period){}
-    
+
     void init() override;
     void update() override;
+
     using System::update;
 };
 

@@ -23,13 +23,16 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 
 Game::Game()
     : EM(std::make_shared<EntityManager>()),
-      inputSystem(EM,0),
-      renderSystem(EM,0),
-      physicsSystem(EM,17)
+      SigM(std::make_shared<SignalsManager>()),
+      inputSystem(EM,SigM,0),
+      gameSystem(EM,SigM,0),
+      physicsSystem(EM,SigM,17),
+      renderSystem(EM,SigM,0)
 {
     inputSystem.init();
-    renderSystem.init();
+    gameSystem.init();
     physicsSystem.init();
+    renderSystem.init();
     Log("Game::Game");
 }
 
@@ -39,6 +42,7 @@ void Game::loop()
     while(true){
         uint32_t ticks = SDL_GetTicks();
         inputSystem.update(ticks);
+        gameSystem.update(ticks);
         physicsSystem.update(ticks);
         renderSystem.update(ticks);
     }

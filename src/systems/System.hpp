@@ -22,18 +22,22 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #define SYSTEM_HPP
 
 #include "EntityManager.hpp"
+#include "SignalsManager.hpp"
 
 class System
 {
 protected:
+    
     EntityManagerSP EM;
+    SignalsManagerSP SigM;
     uint32_t mLast_ticks;
     uint32_t mPeriod;
     
 public:
 
-    System(EntityManagerSP em,uint32_t period)
+    System(EntityManagerSP em, SignalsManagerSP sigm, uint32_t period)
         :EM(em),
+         SigM(sigm),
          mLast_ticks(0),
          mPeriod(period)
     {

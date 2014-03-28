@@ -36,6 +36,8 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include "parts/CollisionPart.hpp"
 #include "parts/OpenGLShadersPart.hpp"
 #include "parts/CameraPart.hpp"
+#include "parts/SignalsPart.hpp"
+#include "parts/MovementPart.hpp"
 
 typedef size_t Entity;
 typedef int32_t Part_t;
@@ -47,7 +49,9 @@ enum class Parts : Part_t
     GLMesh,
     Collision,
     GLShaders,
-    Camera
+    Camera,
+    Signals,
+    Movement
 };
 
 template <typename T>
@@ -80,6 +84,8 @@ public:
     PartContainer<CollisionPart> collision;
     PartContainer<OpenGLShadersPart> glShaders;
     PartContainer<CameraPart> camera;
+    PartContainer<SignalsPart> signals;
+    PartContainer<MovementPart> movement;
 
     std::set<Entity> entities;
    

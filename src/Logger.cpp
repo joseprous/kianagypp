@@ -20,9 +20,3 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Logger.hpp"
 
-#include <iostream>
-
-void Log(std::string message)
-{
-    std::cout << message << std::endl;
-}

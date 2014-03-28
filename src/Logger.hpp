@@ -22,7 +22,12 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #define LOGGER_HPP
 
 #include <string>
+#include <iostream>
 
-void Log(std::string message);
+template<typename T>
+void Log(T message)
+{
+    std::cout << message << std::endl;
+}
 
 #endif

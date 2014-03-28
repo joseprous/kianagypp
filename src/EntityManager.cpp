@@ -25,10 +25,29 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 Entity createPlayer(EntityManagerSP em, glm::vec3 position)
 {
     Entity player = em->addEntity();
-    em->attach(player, {Parts::Position, Parts::Camera});
+    em->attach(player, {Parts::Position, Parts::Camera, Parts::Movement, Parts::Signals});
 
-    em->position[player] = {position, glm::vec3(0,0,1), glm::vec3(0,1,0), glm::angleAxis(0.0f,glm::vec3(0,0,1))};
-    em->camera[player] = {glm::vec3(10,10,10)};
+    em->position[player] = {position,
+                            glm::vec3(0,0,1),
+                            glm::vec3(0,1,0),
+                            glm::angleAxis(0.0f,glm::vec3(0,0,1))};
+
+    em->camera[player] = {glm::vec3(0,0,1)};
+    em->movement[player] = {0.1f,0.1f,0.1f,0.1f,0.1f,0.1f,
+                            0,0,0,0,0,0};
+    
+    em->signals[player].signals.insert(Signals::MoveLeft);    
+    em->signals[player].signals.insert(Signals::MoveRight);    
+    em->signals[player].signals.insert(Signals::MoveForward);    
+    em->signals[player].signals.insert(Signals::MoveBackward);    
+    em->signals[player].signals.insert(Signals::MoveUp);    
+    em->signals[player].signals.insert(Signals::MoveDown);    
+    em->signals[player].signals.insert(Signals::StopMoveLeft);    
+    em->signals[player].signals.insert(Signals::StopMoveRight);    
+    em->signals[player].signals.insert(Signals::StopMoveForward);    
+    em->signals[player].signals.insert(Signals::StopMoveBackward);    
+    em->signals[player].signals.insert(Signals::StopMoveUp);    
+    em->signals[player].signals.insert(Signals::StopMoveDown);    
 
     return player;
 }

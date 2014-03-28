@@ -32,8 +32,8 @@ private:
 
 public:
 
-    PhysicsSystem(EntityManagerSP em,uint32_t period)
-        :System(em,period){}
+    PhysicsSystem(EntityManagerSP em, SignalsManagerSP sigm, uint32_t period)
+        :System(em, sigm, period){}
 
     void init() override;
     void update() override;

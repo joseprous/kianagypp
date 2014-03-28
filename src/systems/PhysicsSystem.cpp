@@ -36,7 +36,32 @@ void PhysicsSystem::init()
     Log("PhysicsSystem::PhysicsSystem");
 }
 
+void move(PositionPart &pos, const glm::vec3 &dir, float distance)
+{
+    if(distance < 0.00001 && distance > (-0.00001)) return; 
+    glm::vec3 aux = pos.quaternion * dir;
+    pos.position = pos.position + (aux * distance);    
+}
+
 void PhysicsSystem::update()
 {
-    
+    for(Entity entity : EM->entities){
+        if(EM->has(entity,Parts::Movement)){
+            auto &mov = EM->movement[entity];
+            if(EM->has(entity,Parts::Collision)){
+                
+            }else{
+                if(EM->has(entity,Parts::Position)){
+                    auto &pos = EM->position[entity];
+                    move(pos, glm::cross(pos.up, pos.direction), mov.left);
+                    move(pos, glm::cross(pos.direction, pos.up), mov.right);
+                    move(pos, pos.direction, mov.up);
+                    move(pos, pos.direction, -mov.down);
+                    move(pos, pos.up, -mov.forward);
+                    move(pos, pos.up, mov.backward);
+                }
+            }
+        }
+    }
+
 }
