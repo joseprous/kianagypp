@@ -55,10 +55,10 @@ void PhysicsSystem::update()
                     auto &pos = EM->position[entity];
                     move(pos, glm::cross(pos.up, pos.direction), mov.left);
                     move(pos, glm::cross(pos.direction, pos.up), mov.right);
-                    move(pos, pos.direction, mov.up);
-                    move(pos, pos.direction, -mov.down);
-                    move(pos, pos.up, -mov.forward);
-                    move(pos, pos.up, mov.backward);
+                    move(pos, pos.direction, mov.forward);
+                    move(pos, pos.direction, -mov.backward);
+                    move(pos, pos.up, mov.up);
+                    move(pos, pos.up, -mov.down);
                 }
             }
         }

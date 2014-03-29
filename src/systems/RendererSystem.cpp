@@ -88,7 +88,7 @@ bool RenderSystem::getCamera(glm::mat4 &view)
             //auto &camera = EM->camera[entity];
             if(EM->has(entity,Parts::Position)){
                 auto &pos = EM->position[entity];
-                glm::vec3 camera_pos = pos.position + glm::vec3(0,1,0);
+                glm::vec3 camera_pos = pos.position + glm::vec3(0,-1,0);
                 glm::vec3 mDirection = glm::normalize(pos.position - camera_pos);
                 view = glm::lookAt( camera_pos, camera_pos + mDirection, glm::vec3(0,0,1) );
                 return true;

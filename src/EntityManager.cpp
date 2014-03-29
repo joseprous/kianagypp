@@ -28,9 +28,9 @@ Entity createPlayer(EntityManagerSP em, glm::vec3 position)
     em->attach(player, {Parts::Position, Parts::Camera, Parts::Movement, Parts::Signals});
 
     em->position[player] = {position,
-                            glm::vec3(0,0,1),
                             glm::vec3(0,1,0),
-                            glm::angleAxis(0.0f,glm::vec3(0,0,1))};
+                            glm::vec3(0,0,1),
+                            glm::angleAxis(0.0f,glm::vec3(0,1,0))};
 
     em->camera[player] = {glm::vec3(0,0,1)};
     em->movement[player] = {0.1f,0.1f,0.1f,0.1f,0.1f,0.1f,
