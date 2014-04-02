@@ -12,12 +12,7 @@ enum class Signals
     MoveBackward,
     MoveUp,
     MoveDown,
-    StopMoveRight,
-    StopMoveLeft,
-    StopMoveForward,
-    StopMoveBackward,    
-    StopMoveUp,
-    StopMoveDown
+    RotateX    
 };
 
 class Signal

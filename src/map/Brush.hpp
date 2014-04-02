@@ -54,6 +54,8 @@ struct Vertex
 {
     glm::dvec3 pos;
     double ang;
+    Vertex(){}
+    Vertex(glm::dvec3 position):pos(position){}
 };
 
 struct poly

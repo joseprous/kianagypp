@@ -32,149 +32,99 @@ void GameSystem::update()
         exit(0);
     }
     
-    if(SigM->receive(Signals::MoveRight))
+    if(auto move = SigM->receiveb(Signals::MoveRight))
     {
         for(Entity entity : EM->entities){
-            if(EM->has(entity,Parts::Signals)){
-                auto &signals = EM->signals[entity];
-                if(signals.signals.count(Signals::MoveRight) > 0){
-                    EM->movement[entity].right = EM->movement[entity].speedRight;
-                }
-            }
-        }
-    }
-    
-    if(SigM->receive(Signals::StopMoveRight))
-    {
-        for(Entity entity : EM->entities){
-            if(EM->has(entity,Parts::Signals)){
-                auto &signals = EM->signals[entity];
-                if(signals.signals.count(Signals::StopMoveRight) > 0){
-                    EM->movement[entity].right = 0;
-                }
+            if(auto signals = EM->getSignals(entity)){
+                if(signals->signals.count(Signals::MoveRight) > 0){
+                    if(*move){
+                        EM->movement[entity].right = EM->movement[entity].speedRight;
+                    }else{
+                        EM->movement[entity].right = 0;
+                    }
+                }                
             }
         }
     }
 
-    if(SigM->receive(Signals::MoveLeft))
+    if(auto move = SigM->receiveb(Signals::MoveLeft))
     {
         for(Entity entity : EM->entities){
-            if(EM->has(entity,Parts::Signals)){
-                auto &signals = EM->signals[entity];
-                if(signals.signals.count(Signals::MoveLeft) > 0){
-                    EM->movement[entity].left = EM->movement[entity].speedLeft;
+            if(auto signals = EM->getSignals(entity)){
+                if(signals->signals.count(Signals::MoveLeft) > 0){
+                    if(*move){
+                        EM->movement[entity].left = EM->movement[entity].speedLeft;
+                    }else{
+                        EM->movement[entity].left = 0;
+                    }
                 }
             }
         }
     }
     
-    if(SigM->receive(Signals::StopMoveLeft))
-    {
-        for(Entity entity : EM->entities){
-            if(EM->has(entity,Parts::Signals)){
-                auto &signals = EM->signals[entity];
-                if(signals.signals.count(Signals::StopMoveLeft) > 0){
-                    EM->movement[entity].left = 0;
-                }
-            }
-        }
-    }
 
-    if(SigM->receive(Signals::MoveForward))
+    if(auto move = SigM->receiveb(Signals::MoveForward))
     {
         for(Entity entity : EM->entities){
-            if(EM->has(entity,Parts::Signals)){
-                auto &signals = EM->signals[entity];
-                if(signals.signals.count(Signals::MoveForward) > 0){
-                    EM->movement[entity].forward = EM->movement[entity].speedForward;
+            if(auto signals = EM->getSignals(entity)){
+                if(signals->signals.count(Signals::MoveForward) > 0){
+                    if(*move){
+                        EM->movement[entity].forward = EM->movement[entity].speedForward;
+                    }else{
+                        EM->movement[entity].forward = 0;
+                    }
                 }
             }
         }
     }
     
-    if(SigM->receive(Signals::StopMoveForward))
+    if(auto move = SigM->receiveb(Signals::MoveBackward))
     {
         for(Entity entity : EM->entities){
-            if(EM->has(entity,Parts::Signals)){
-                auto &signals = EM->signals[entity];
-                if(signals.signals.count(Signals::StopMoveForward) > 0){
-                    EM->movement[entity].forward = 0;
-                }
-            }
-        }
-    }
-
-    if(SigM->receive(Signals::MoveBackward))
-    {
-        for(Entity entity : EM->entities){
-            if(EM->has(entity,Parts::Signals)){
-                auto &signals = EM->signals[entity];
-                if(signals.signals.count(Signals::MoveBackward) > 0){
-                    EM->movement[entity].backward = EM->movement[entity].speedBackward;
+            if(auto signals = EM->getSignals(entity)){
+                if(signals->signals.count(Signals::MoveBackward) > 0){
+                    if(*move){
+                        EM->movement[entity].backward = EM->movement[entity].speedBackward;
+                    }else{
+                        EM->movement[entity].backward = 0;
+                    }
                 }
             }
         }
     }
     
-    if(SigM->receive(Signals::StopMoveBackward))
+    if(auto move = SigM->receiveb(Signals::MoveUp))
     {
         for(Entity entity : EM->entities){
-            if(EM->has(entity,Parts::Signals)){
-                auto &signals = EM->signals[entity];
-                if(signals.signals.count(Signals::StopMoveBackward) > 0){
-                    EM->movement[entity].backward = 0;
-                }
-            }
-        }
-    }
-
-
-    if(SigM->receive(Signals::MoveUp))
-    {
-        for(Entity entity : EM->entities){
-            if(EM->has(entity,Parts::Signals)){
-                auto &signals = EM->signals[entity];
-                if(signals.signals.count(Signals::MoveUp) > 0){
-                    EM->movement[entity].up = EM->movement[entity].speedUp;
+            if(auto signals = EM->getSignals(entity)){
+                if(signals->signals.count(Signals::MoveUp) > 0){
+                    if(*move){
+                        EM->movement[entity].up = EM->movement[entity].speedUp;
+                    }else{
+                        EM->movement[entity].up = 0;
+                    }
                 }
             }
         }
     }
     
-    if(SigM->receive(Signals::StopMoveUp))
+    if(auto move = SigM->receiveb(Signals::MoveDown))
     {
         for(Entity entity : EM->entities){
-            if(EM->has(entity,Parts::Signals)){
-                auto &signals = EM->signals[entity];
-                if(signals.signals.count(Signals::StopMoveUp) > 0){
-                    EM->movement[entity].up = 0;
-                }
-            }
-        }
-    }
-
-    if(SigM->receive(Signals::MoveDown))
-    {
-        for(Entity entity : EM->entities){
-            if(EM->has(entity,Parts::Signals)){
-                auto &signals = EM->signals[entity];
-                if(signals.signals.count(Signals::MoveDown) > 0){
-                    EM->movement[entity].down = EM->movement[entity].speedDown;
+            if(auto signals = EM->getSignals(entity)){
+                if(signals->signals.count(Signals::MoveDown) > 0){
+                    if(*move){
+                        EM->movement[entity].down = EM->movement[entity].speedDown;
+                    }else{
+                        EM->movement[entity].down = 0;
+                    }
                 }
             }
         }
     }
     
-    if(SigM->receive(Signals::StopMoveDown))
+    if(auto r = SigM->receivef(Signals::RotateX))
     {
-        for(Entity entity : EM->entities){
-            if(EM->has(entity,Parts::Signals)){
-                auto &signals = EM->signals[entity];
-                if(signals.signals.count(Signals::StopMoveDown) > 0){
-                    EM->movement[entity].down = 0;
-                }
-            }
-        }
+        //Log("rotation: ", *r);
     }
-    
 }

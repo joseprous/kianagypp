@@ -25,6 +25,9 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include "Game.hpp"
 #include "map/Map.hpp"
 
+#include "CreatePlayer.hpp"
+#include "CreateBrush.hpp"
+
 SDL_Window* init_sdl()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0){
@@ -86,6 +89,7 @@ int main(int argc, char **argv)
     Game game;
     game.renderSystem.window = window;
     createPlayer(game.EM,start_pos);
+    createCube(game.EM,start_pos);
     
     for(const brush &b : map.entities[0].mBrushes){
         createBrush(game.EM,b);

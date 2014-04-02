@@ -24,7 +24,8 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <memory>
 #include <set>
 #include "Signals.hpp"
-
+#include <map>
+#include <boost/optional.hpp>
 
 class SignalsManager 
 {     
@@ -32,32 +33,22 @@ public:
 
     void send(Signals signal);
 
-    template<typename T>
-    void send(Signals signal, T value);
     
     bool receive(Signals signal);
 
-    template<typename T>
-    bool receive(Signals signal, T &value);
+    void sendf(Signals signal, float value);
+    void sendb(Signals signal, bool value);
 
+    boost::optional<float> receivef(Signals signal);
+    boost::optional<bool> receiveb(Signals signal);
+    
 private:
     std::set<Signals> signals;
+    std::map<Signals,float> valuesf;
+    std::map<Signals,bool> valuesb;
 };
 
 typedef std::shared_ptr<SignalsManager> SignalsManagerSP;
-
-
-template<typename T>
-void SignalsManager::send(Signals signal, T value)
-{
-    
-}
-
-template<typename T>
-bool SignalsManager::receive(Signals signal, T &value)
-{
-    return false;
-}
 
 
 #endif // SIGNALSMANAGER_HPP

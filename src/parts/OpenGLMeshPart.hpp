@@ -24,6 +24,8 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <GL/glew.h>
 #include <vector>
 
+#include "map/Brush.hpp"
+
 struct OpenGLMeshPart
 {
     std::vector<GLfloat> vertex_buffer_data;
@@ -33,5 +35,7 @@ struct OpenGLMeshPart
     GLuint colorbuffer;
     GLuint elementbuffer;
 };
+
+OpenGLMeshPart create_glmesh(const Mesh &mesh);
 
 #endif

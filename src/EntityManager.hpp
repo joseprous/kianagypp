@@ -27,6 +27,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <initializer_list>
 #include <map>
 #include <set>
+#include <boost/optional.hpp>
 
 #include "Logger.hpp"
 
@@ -77,6 +78,7 @@ private:
 
     std::set<Entity> available_entities;
 
+  
 public:
     PartContainer<PositionPart> position;
     PartContainer<MeshPart> mesh;
@@ -93,13 +95,21 @@ public:
     void removeEntity(Entity entity);
     void attach(Entity entity, std::initializer_list<Parts> parts);
     void detach(Entity entity, std::initializer_list<Parts> parts);
+
     bool has(Entity entity, Parts part);
+
+    boost::optional<PositionPart &> getPosition(Entity entity);
+    boost::optional<OpenGLMeshPart &> getGLMesh(Entity entity);
+    boost::optional<CollisionPart &> getCollision(Entity entity);
+    boost::optional<OpenGLShadersPart &> getGLShaders(Entity entity);
+    boost::optional<CameraPart &> getCamera(Entity entity);
+    boost::optional<SignalsPart &> getSignals(Entity entity);
+    boost::optional<MovementPart &> getMovement(Entity entity);
 };
 
 typedef std::shared_ptr<EntityManager> EntityManagerSP;
 
-Entity createPlayer(EntityManagerSP em, glm::vec3 position);
-Entity createBrush(EntityManagerSP em, const brush &b);
-
+//Entity createPlayer(EntityManagerSP em, glm::vec3 position);
+//Entity createBrush(EntityManagerSP em, const brush &b);
 
 #endif

@@ -43,22 +43,22 @@ void InputSystem::update()
                 SigM->send(Signals::Exit);                
                 break;
             case SDLK_d:
-                SigM->send(Signals::MoveRight);
+                SigM->sendb(Signals::MoveRight, true);
                 break;
             case SDLK_a:  
-                SigM->send(Signals::MoveLeft);
+                SigM->sendb(Signals::MoveLeft, true);
                 break;
             case SDLK_w:    
-                SigM->send(Signals::MoveForward);
+                SigM->sendb(Signals::MoveForward, true);
                 break;
             case SDLK_s:    
-                SigM->send(Signals::MoveBackward);
+                SigM->sendb(Signals::MoveBackward, true);
                 break;
             case SDLK_q:    
-                SigM->send(Signals::MoveUp);
+                SigM->sendb(Signals::MoveUp, true);
                 break;
             case SDLK_e:    
-                SigM->send(Signals::MoveDown);
+                SigM->sendb(Signals::MoveDown, true);
                 break;
             case SDLK_LEFT:
                 break;
@@ -75,22 +75,22 @@ void InputSystem::update()
             keysym = windowEvent.key.keysym;
             switch (keysym.sym) {
             case SDLK_d:
-                SigM->send(Signals::StopMoveRight);
+                SigM->sendb(Signals::MoveRight, false);
                 break;
             case SDLK_a:  
-                SigM->send(Signals::StopMoveLeft);
+                SigM->sendb(Signals::MoveLeft, false);
                 break;
             case SDLK_w:    
-                SigM->send(Signals::StopMoveForward);
+                SigM->sendb(Signals::MoveForward, false);
                 break;
             case SDLK_s:    
-                SigM->send(Signals::StopMoveBackward);
+                SigM->sendb(Signals::MoveBackward, false);
                 break;
             case SDLK_q:    
-                SigM->send(Signals::StopMoveUp);
+                SigM->sendb(Signals::MoveUp, false);
                 break;
             case SDLK_e:    
-                SigM->send(Signals::StopMoveDown);
+                SigM->sendb(Signals::MoveDown, false);
                 break;
             case SDLK_LEFT:
                 break;
@@ -104,11 +104,13 @@ void InputSystem::update()
             break;
         case SDL_MOUSEMOTION:
 
-            /*float angleX = windowEvent.motion.xrel * (-1);
-            float angleY = windowEvent.motion.yrel * (-1);
-                
-            camera.RotateX(angleX);
-            camera.RotateY(angleY);*/
+            float angleX = windowEvent.motion.xrel * (-1);
+//            float angleY = windowEvent.motion.yrel * (-1);
+
+            SigM->sendf(Signals::RotateX,angleX);
+
+            //camera.RotateX(angleX);
+            //camera.RotateY(angleY);
             break;
         }
     }

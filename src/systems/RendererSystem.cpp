@@ -84,12 +84,10 @@ void draw(OpenGLMeshPart *part)
 bool RenderSystem::getCamera(glm::mat4 &view)
 {
     for(Entity entity : EM->entities){
-        if(EM->has(entity,Parts::Camera)){
-            //auto &camera = EM->camera[entity];
-            if(EM->has(entity,Parts::Position)){
-                auto &pos = EM->position[entity];
-                glm::vec3 camera_pos = pos.position + glm::vec3(0,-1,0);
-                glm::vec3 mDirection = glm::normalize(pos.position - camera_pos);
+        if(auto camera = EM->getCamera(entity)){
+            if(auto pos = EM->getPosition(entity)){
+                glm::vec3 camera_pos = pos->position + glm::vec3(0,-5,2);
+                glm::vec3 mDirection = glm::normalize(pos->position - camera_pos);
                 view = glm::lookAt( camera_pos, camera_pos + mDirection, glm::vec3(0,0,1) );
                 return true;
             }
@@ -110,17 +108,21 @@ void RenderSystem::update()
     
     glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
     for(Entity entity : EM->entities){
-        if(EM->has(entity,Parts::GLShaders)){
-            auto &shaders = EM->glShaders[entity];
-
-            if(EM->has(entity,Parts::GLMesh)){
-                auto &mesh = EM->glMesh[entity];
-
-                GLuint programId = SM.GetShaderProgram(shaders);
+        if(auto shaders = EM->getGLShaders(entity)){
+            if(auto mesh = EM->getGLMesh(entity)){
+                GLuint programId = SM.GetShaderProgram(*shaders);
                 glUseProgram(programId);
 
                 glm::mat4 Model      = glm::mat4(1.0f);
 
+                if(auto position = EM->getPosition(entity)){
+                    glm::mat4 translate = glm::translate(position->position);
+                    //glm::mat4 orientation =  glm::toMat4(mQuaternion);
+                    glm::mat4 scale = glm::scale( glm::vec3(0.5,0.5,0.5) );
+                    Model = translate/* * orientation*/ * scale  * Model;
+                }
+                
+                
                 glm::mat4 MVP        = projection * view * Model;
 
                 GLuint MatrixID = (GLuint)glGetUniformLocation(programId, "MVP");
@@ -132,7 +134,7 @@ void RenderSystem::update()
                 
                 glUniform2f(WinScaleID, 640, 480);
 
-                draw(&mesh);
+                draw(&(*mesh));
             }
         }
     }

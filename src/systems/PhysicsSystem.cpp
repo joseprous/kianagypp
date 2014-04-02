@@ -46,19 +46,17 @@ void move(PositionPart &pos, const glm::vec3 &dir, float distance)
 void PhysicsSystem::update()
 {
     for(Entity entity : EM->entities){
-        if(EM->has(entity,Parts::Movement)){
-            auto &mov = EM->movement[entity];
-            if(EM->has(entity,Parts::Collision)){
+        if(auto mov = EM->getMovement(entity)){
+            if(auto coll = EM->getCollision(entity)){
                 
             }else{
-                if(EM->has(entity,Parts::Position)){
-                    auto &pos = EM->position[entity];
-                    move(pos, glm::cross(pos.up, pos.direction), mov.left);
-                    move(pos, glm::cross(pos.direction, pos.up), mov.right);
-                    move(pos, pos.direction, mov.forward);
-                    move(pos, pos.direction, -mov.backward);
-                    move(pos, pos.up, mov.up);
-                    move(pos, pos.up, -mov.down);
+                if(auto pos = EM->getPosition(entity)){
+                    move(*pos, glm::cross(pos->up, pos->direction), mov->left);
+                    move(*pos, glm::cross(pos->direction, pos->up), mov->right);
+                    move(*pos, pos->direction, mov->forward);
+                    move(*pos, pos->direction, -mov->backward);
+                    move(*pos, pos->up, mov->up);
+                    move(*pos, pos->up, -mov->down);
                 }
             }
         }

@@ -24,11 +24,15 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <memory>
 #include <bullet/btBulletDynamicsCommon.h>
 
+#include "map/Brush.hpp"
+
 struct CollisionPart
 {
     std::shared_ptr<btConvexHullShape> convexHullShape;
     std::shared_ptr<btDefaultMotionState> groundMotionState;
     std::shared_ptr<btRigidBody> groundRigidBody;
 };
+
+CollisionPart create_collision_part(const Mesh &mesh);
 
 #endif

@@ -24,10 +24,35 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <iostream>
 
+#include <glm/glm.hpp>
+
+/*void LogM(glm::mat4  mat){
+    int i,j;
+    for (j=0; j<4; j++){
+        for (i=0; i<4; i++){
+            printf("%f ",mat[i][j]);
+        }
+        printf("\n");
+    }
+    }*/
+
 template<typename T>
 void Log(T message)
 {
     std::cout << message << std::endl;
 }
+
+template<typename T0, typename T1>
+void Log(T0 message1, T1 message2)
+{
+    std::cout << message1 << " " << message2 << " " << std::endl;
+}
+
+template<typename T0,typename T1,typename T2>
+void Log(T0 message1, T1 message2, T2 message3)
+{
+    std::cout << message1 << " "  << message2 << " "  << message3 << std::endl;
+}
+
 
 #endif
