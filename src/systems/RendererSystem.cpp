@@ -86,9 +86,10 @@ bool RenderSystem::getCamera(glm::mat4 &view)
     for(Entity entity : EM->entities){
         if(auto camera = EM->getCamera(entity)){
             if(auto pos = EM->getPosition(entity)){
-                glm::vec3 camera_pos = pos->position + glm::vec3(0,-5,2);
-                glm::vec3 mDirection = glm::normalize(pos->position - camera_pos);
-                view = glm::lookAt( camera_pos, camera_pos + mDirection, glm::vec3(0,0,1) );
+                glm::vec3 aux = pos->quaternion * pos->direction;
+
+                glm::vec3 camera_pos = pos->position - camera->relativePosition.x * aux + camera->relativePosition.y * pos->up;
+                view = glm::lookAt( camera_pos, pos->position, glm::vec3(0,0,1) );
                 return true;
             }
         }
@@ -117,9 +118,9 @@ void RenderSystem::update()
 
                 if(auto position = EM->getPosition(entity)){
                     glm::mat4 translate = glm::translate(position->position);
-                    //glm::mat4 orientation =  glm::toMat4(mQuaternion);
+                    glm::mat4 orientation =  glm::toMat4(position->quaternion);
                     glm::mat4 scale = glm::scale( glm::vec3(0.5,0.5,0.5) );
-                    Model = translate/* * orientation*/ * scale  * Model;
+                    Model = translate * orientation * scale  * Model;
                 }
                 
                 

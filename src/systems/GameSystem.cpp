@@ -19,6 +19,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "GameSystem.hpp"
+#include <glm/gtx/vector_angle.hpp>
 
 void GameSystem::init()
 {
@@ -123,8 +124,15 @@ void GameSystem::update()
         }
     }
     
-    if(auto r = SigM->receivef(Signals::RotateX))
+    if(auto angleX = SigM->receivef(Signals::RotateX))
     {
-        //Log("rotation: ", *r);
+        for(Entity entity : EM->entities){
+            if(auto signals = EM->getSignals(entity)){
+                if(signals->signals.count(Signals::RotateX) > 0){
+                    auto rot = glm::angleAxis(*angleX,EM->position[entity].up);
+                    EM->position[entity].quaternion = EM->position[entity].quaternion * rot;
+                }
+            }
+        }
     }
 }

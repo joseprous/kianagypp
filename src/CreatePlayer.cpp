@@ -1,7 +1,7 @@
 #include "EntityManager.hpp"
 
 #include <glm/gtx/quaternion.hpp>
-
+#include <glm/gtc/constants.hpp>
 #include "map/Brush.hpp"
 
 poly createPoly(std::vector<glm::dvec3> points)
@@ -69,9 +69,10 @@ Entity createPlayer(EntityManagerSP em, glm::vec3 position)
     em->position[player] = {position,
                             glm::vec3(0,1,0),
                             glm::vec3(0,0,1),
-                            glm::angleAxis(0.0f,glm::vec3(0,1,0))};
+                            glm::angleAxis(0.0f,glm::vec3(0,0,1))};
 
-    em->camera[player] = {glm::vec3(0,0,1)};
+    em->camera[player] = {glm::vec3(3,1,0)};
+    
     em->movement[player] = {0.1f,0.1f,0.1f,0.1f,0.1f,0.1f,
                             0,0,0,0,0,0};
 
@@ -94,16 +95,16 @@ Entity createPlayer(EntityManagerSP em, glm::vec3 position)
 Entity createCube(EntityManagerSP em, glm::vec3 position)
 {
     Entity cube = em->addEntity();
-    em->attach(cube, {Parts::Position/*, Parts::Mesh*/, Parts::GLShaders, Parts::GLMesh});
+    em->attach(cube, {Parts::Position, Parts::Mesh, Parts::GLShaders, Parts::GLMesh});
 
     em->position[cube] = {position,
                           glm::vec3(0,1,0),
                           glm::vec3(0,0,1),
-                          glm::angleAxis(0.0f,glm::vec3(0,1,0))};
-
+                          glm::angleAxis(0.0f,glm::vec3(0,0,1))};
+    
     em->glShaders[cube] = {"shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom", "wireframe" };
 
-    //em->mesh[cube] = { getCubeMesh() };
+    em->mesh[cube] = { getCubeMesh() };
     em->glMesh[cube] = create_glmesh(getCubeMesh());
 
     return cube;

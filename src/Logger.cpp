@@ -20,3 +20,23 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Logger.hpp"
 
+template<> void Log<glm::vec3>(glm::vec3 v)
+{
+    std::cout << "(" << v.x << "," << v.y << "," << v.z << ")" << std::endl;
+}
+
+template<> void Log<glm::quat>(glm::quat q)
+{
+    std::cout << "(" << q.x << "," << q.y << "," << q.z << "," << q.w << ")" << std::endl;
+}
+
+template<> void Log<glm::mat4>(glm::mat4 mat)
+{
+    int i,j;
+    for (j=0; j<4; j++){
+        for (i=0; i<4; i++){
+            std::cout << mat[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}

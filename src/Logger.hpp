@@ -25,6 +25,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <iostream>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 /*void LogM(glm::mat4  mat){
     int i,j;
@@ -36,11 +37,19 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
     }
     }*/
 
+
+
+
 template<typename T>
 void Log(T message)
 {
     std::cout << message << std::endl;
 }
+
+template<> void Log<glm::vec3>(glm::vec3 v);
+template<> void Log<glm::quat>(glm::quat q);
+template<> void Log<glm::mat4>(glm::mat4 m);
+
 
 template<typename T0, typename T1>
 void Log(T0 message1, T1 message2)

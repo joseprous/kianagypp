@@ -89,7 +89,7 @@ int main(int argc, char **argv)
     Game game;
     game.renderSystem.window = window;
     createPlayer(game.EM,start_pos);
-    createCube(game.EM,start_pos);
+//    createCube(game.EM,start_pos);
     
     for(const brush &b : map.entities[0].mBrushes){
         createBrush(game.EM,b);
