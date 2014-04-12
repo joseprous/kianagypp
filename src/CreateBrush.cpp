@@ -11,7 +11,7 @@ Entity createBrush(EntityManagerSP em, const brush &b)
     em->glShaders[brush] = {"shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom", "wireframe" };
 
     em->glMesh[brush] = create_glmesh(b.getMesh());
-    em->collision[brush] = create_collision_part(b.getMesh());
+    em->collision[brush] = create_collision_part(b.getMesh(), false, false);
 
     return brush;
 }

@@ -22,12 +22,12 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 
 void PhysicsSystem::init()
 {
-    auto broadphase = std::make_shared<btDbvtBroadphase>();
-        
-    auto collisionConfiguration = std::make_shared<btDefaultCollisionConfiguration>();
-    auto dispatcher = std::make_shared<btCollisionDispatcher>(collisionConfiguration.get());
+    broadphase = std::make_shared<btDbvtBroadphase>();
+    
+    collisionConfiguration = std::make_shared<btDefaultCollisionConfiguration>();
+    dispatcher = std::make_shared<btCollisionDispatcher>(collisionConfiguration.get());
 
-    auto solver = std::make_shared<btSequentialImpulseConstraintSolver>();
+    solver = std::make_shared<btSequentialImpulseConstraintSolver>();
 
     dynamicsWorld = std::make_shared<btDiscreteDynamicsWorld>(dispatcher.get(),broadphase.get(),solver.get(),collisionConfiguration.get());
 
@@ -45,11 +45,14 @@ void move(PositionPart &pos, const glm::vec3 &dir, float distance)
 
 void PhysicsSystem::update()
 {
+    //Log("PhysicsSystem::update");
+    dynamicsWorld->stepSimulation(1/60.f,10);
+
     for(Entity entity : EM->entities){
         if(auto mov = EM->getMovement(entity)){
-            if(auto coll = EM->getCollision(entity)){
+            /*if(auto coll = EM->getCollision(entity)){
                 
-            }else{
+              }else{*/
                 if(auto pos = EM->getPosition(entity)){
                     move(*pos, glm::cross(pos->up, pos->direction), mov->left);
                     move(*pos, glm::cross(pos->direction, pos->up), mov->right);
@@ -57,6 +60,28 @@ void PhysicsSystem::update()
                     move(*pos, pos->direction, -mov->backward);
                     move(*pos, pos->up, mov->up);
                     move(*pos, pos->up, -mov->down);
+                }
+                //}
+        }
+        if(auto coll = EM->getCollision(entity)){
+            if(coll->move){
+                if(auto position = EM->getPosition(entity)){
+                    btTransform trans;
+                    coll->rigidBody->getMotionState()->getWorldTransform(trans);
+                    auto pos = trans.getOrigin();
+
+                    position->position.x = pos.getX();
+                    position->position.y = pos.getY();
+                    position->position.z = pos.getZ();
+
+                    //Log(position->position);
+                    if(coll->changeUp){
+                        auto rot = trans.getRotation();
+                        auto axis = rot.getAxis ();
+                        auto angle = rot.getAngle();
+                        glm::quat q = glm::angleAxis (glm::degrees(angle), glm::vec3(axis.getX(),axis.getY(),axis.getZ()));
+                        position->quaternion = q;
+                    }
                 }
             }
         }

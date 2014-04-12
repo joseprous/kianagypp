@@ -88,11 +88,14 @@ int main(int argc, char **argv)
 
     Game game;
     game.renderSystem.window = window;
-    createPlayer(game.EM,start_pos);
-//    createCube(game.EM,start_pos);
+    /*Entity player = */createPlayer(game.EM,start_pos);
+    //game.physicsSystem.dynamicsWorld->addRigidBody(game.EM->collision[player].rigidBody.get());
+    Entity cube = createCube(game.EM,start_pos/* - glm::vec3(1,0,-20)*/);
+    game.physicsSystem.dynamicsWorld->addRigidBody(game.EM->collision[cube].rigidBody.get());
     
     for(const brush &b : map.entities[0].mBrushes){
-        createBrush(game.EM,b);
+        Entity b1 = createBrush(game.EM,b);
+        game.physicsSystem.dynamicsWorld->addRigidBody(game.EM->collision[b1].rigidBody.get());
     }
 
     game.loop();

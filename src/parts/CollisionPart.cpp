@@ -1,6 +1,6 @@
 #include "CollisionPart.hpp"
 
-CollisionPart create_collision_part(const Mesh &mesh)
+CollisionPart create_collision_part(const Mesh &mesh, bool changeUp, bool move)
 {
     CollisionPart collision;
     collision.convexHullShape = std::make_shared<btConvexHullShape>();
@@ -9,10 +9,13 @@ CollisionPart create_collision_part(const Mesh &mesh)
             collision.convexHullShape->addPoint(btVector3((float)v.pos.x,(float)v.pos.y,(float)v.pos.z));
         }
     }
-    collision.groundMotionState = std::make_shared<btDefaultMotionState>();
+    
+    collision.motionState = std::make_shared<btDefaultMotionState>();
 
-    btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0,collision.groundMotionState.get(),collision.convexHullShape.get(),btVector3(0,0,0));
+    btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(0,collision.motionState.get(),collision.convexHullShape.get(),btVector3(0,0,0));
 
-    collision.groundRigidBody = std::make_shared<btRigidBody>(groundRigidBodyCI);
+    collision.rigidBody = std::make_shared<btRigidBody>(rigidBodyCI);
+    collision.changeUp = changeUp;
+    collision.move = move;
     return collision;
 }

@@ -64,7 +64,7 @@ Mesh getCubeMesh()
 Entity createPlayer(EntityManagerSP em, glm::vec3 position)
 {
     Entity player = em->addEntity();
-    em->attach(player, {Parts::Position, Parts::Camera, Parts::Movement, Parts::Signals, Parts::Mesh, Parts::GLShaders, Parts::GLMesh});
+    em->attach(player, {Parts::Position, Parts::Camera, Parts::Movement, Parts::Signals, Parts::Mesh, /*Parts::GLShaders, Parts::GLMesh*//*, Parts::Collision*/});
 
     em->position[player] = {position,
                             glm::vec3(0,1,0),
@@ -79,7 +79,10 @@ Entity createPlayer(EntityManagerSP em, glm::vec3 position)
     em->glShaders[player] = {"shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom", "wireframe" };
 
     em->mesh[player] = { getCubeMesh() };
-    em->glMesh[player] = create_glmesh(getCubeMesh());
+    em->glMesh[player] = create_glmesh(em->mesh[player].mesh);
+
+//    em->collision[player] = create_collision_part(em->mesh[player].mesh, false, true);
+
     
     em->signals[player].signals.insert(Signals::MoveLeft);    
     em->signals[player].signals.insert(Signals::MoveRight);    
@@ -95,7 +98,7 @@ Entity createPlayer(EntityManagerSP em, glm::vec3 position)
 Entity createCube(EntityManagerSP em, glm::vec3 position)
 {
     Entity cube = em->addEntity();
-    em->attach(cube, {Parts::Position, Parts::Mesh, Parts::GLShaders, Parts::GLMesh});
+    em->attach(cube, {Parts::Position, Parts::Mesh, Parts::GLShaders, Parts::GLMesh, Parts::Collision});
 
     em->position[cube] = {position,
                           glm::vec3(0,1,0),
@@ -105,8 +108,37 @@ Entity createCube(EntityManagerSP em, glm::vec3 position)
     em->glShaders[cube] = {"shaders/simple.vert", "shaders/simple.frag", "shaders/wireframe.geom", "wireframe" };
 
     em->mesh[cube] = { getCubeMesh() };
-    em->glMesh[cube] = create_glmesh(getCubeMesh());
+    em->glMesh[cube] = create_glmesh(em->mesh[cube].mesh);
 
+    //em->collision[cube] = create_collision_part(em->mesh[cube].mesh, true, true);
+
+    CollisionPart collision;
+    /*collision.convexHullShape = std::make_shared<btConvexHullShape>();
+    for(const poly &p : em->mesh[cube].mesh){
+        for(const Vertex &v : p.vertexes){
+            collision.convexHullShape->addPoint(btVector3((float)v.pos.x,(float)v.pos.y,(float)v.pos.z));
+        }
+        }*/
+
+    collision.boxShape = std::make_shared<btBoxShape>(btVector3(0.5f,0.5f,0.5f));
+    
+    auto pos = em->position[cube].position;
+    auto quat = em->position[cube].quaternion;
+    auto bpos = btVector3(pos.x,pos.y,pos.z);
+    auto bquat = btQuaternion(quat.x, quat.y, quat.z, quat.w);
+    collision.motionState = std::make_shared<btDefaultMotionState>(btTransform(bquat,bpos));
+
+    btScalar mass = 1;
+    btVector3 fallInertia(0,0,0);
+    collision.boxShape->calculateLocalInertia(mass,fallInertia);
+    btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass,collision.motionState.get(),collision.boxShape.get(),fallInertia);
+    
+    collision.rigidBody = std::make_shared<btRigidBody>(rigidBodyCI);
+    collision.changeUp = true;
+    collision.move = true;
+
+    em->collision[cube] = collision;
+    
     return cube;
 }
 

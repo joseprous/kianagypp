@@ -29,10 +29,13 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 struct CollisionPart
 {
     std::shared_ptr<btConvexHullShape> convexHullShape;
-    std::shared_ptr<btDefaultMotionState> groundMotionState;
-    std::shared_ptr<btRigidBody> groundRigidBody;
+    std::shared_ptr<btBoxShape> boxShape;
+    std::shared_ptr<btDefaultMotionState> motionState;
+    std::shared_ptr<btRigidBody> rigidBody;
+    bool changeUp;
+    bool move;
 };
 
-CollisionPart create_collision_part(const Mesh &mesh);
+CollisionPart create_collision_part(const Mesh &mesh, bool changeUp, bool move);
 
 #endif

@@ -28,9 +28,13 @@ class PhysicsSystem : public System
 {
 private:
     
-    std::shared_ptr<btDiscreteDynamicsWorld> dynamicsWorld;
-
+    std::shared_ptr<btDbvtBroadphase> broadphase;
+    std::shared_ptr<btDefaultCollisionConfiguration> collisionConfiguration;
+    std::shared_ptr<btCollisionDispatcher> dispatcher;
+    std::shared_ptr<btSequentialImpulseConstraintSolver> solver;
+    
 public:
+    std::shared_ptr<btDiscreteDynamicsWorld> dynamicsWorld;
 
     PhysicsSystem(EntityManagerSP em, SignalsManagerSP sigm, uint32_t period)
         :System(em, sigm, period){}
