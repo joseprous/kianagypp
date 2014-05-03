@@ -11,7 +11,7 @@
 #include <string>
 #include <algorithm>
 #include <iterator>
-#include "Map.hpp"   
+#include "map/Map.hpp"   
     class Map_Driver;
 
     template <typename T>
@@ -34,7 +34,7 @@
 %define parse.error verbose
 %code
 {
-# include "Map_Driver.hpp"
+# include "map/Map_Driver.hpp"
 }
 %define api.token.prefix {TOK_}
 %token
