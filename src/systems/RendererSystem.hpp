@@ -24,6 +24,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include "EntityManager.hpp"
 #include "System.hpp"
 #include "ShaderManager.hpp"
+#include "AccumulatorsManager.hpp"
 
 #include <tuple>
 #include <map>
@@ -41,8 +42,8 @@ public:
 
     SDL_Window* window;
 
-    RenderSystem(EntityManagerSP em, SignalsManagerSP sigm, uint32_t period)
-        :System(em,sigm,period){}
+    RenderSystem(EntityManagerSP em, SignalsManagerSP sigm, AccumulatorsManagerSP accm, uint32_t period)
+        :System("RenderSystem",em,sigm,accm,period){}
     
     void init() override;
     void update() override;

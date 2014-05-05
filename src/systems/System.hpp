@@ -23,25 +23,32 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "EntityManager.hpp"
 #include "SignalsManager.hpp"
+#include "AccumulatorsManager.hpp"
 
 class System
 {
 protected:
-    
+
+    std::string mSystemName;
     EntityManagerSP EM;
     SignalsManagerSP SigM;
+    AccumulatorsManagerSP AccM;
+
     uint32_t mLast_ticks;
     uint32_t mPeriod;
     
 public:
 
-    System(EntityManagerSP em, SignalsManagerSP sigm, uint32_t period)
-        :EM(em),
+    System(std::string systemName, EntityManagerSP em, SignalsManagerSP sigm, AccumulatorsManagerSP accm, uint32_t period)
+        :mSystemName(systemName),
+         EM(em),
          SigM(sigm),
+         AccM(accm),
          mLast_ticks(0),
          mPeriod(period)
-    {
-    }
+        {
+            AccM->add(mSystemName);
+        }
 
     virtual ~System();
     

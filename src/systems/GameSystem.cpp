@@ -23,16 +23,12 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 
 void GameSystem::init()
 {
-    Log("GameSystem::GameSystem");    
+    Log("GameSystem::GameSystem");
 }
 
 void GameSystem::update()
 {
-    if(SigM->receive(Signals::Exit))
-    {
-        exit(0);
-    }
-    
+   
     if(auto move = SigM->receiveb(Signals::MoveRight))
     {
         for(Entity entity : EM->entities){

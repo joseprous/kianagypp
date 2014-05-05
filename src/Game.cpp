@@ -24,10 +24,11 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 Game::Game()
     : EM(std::make_shared<EntityManager>()),
       SigM(std::make_shared<SignalsManager>()),
-      inputSystem(EM,SigM,0),
-      gameSystem(EM,SigM,0),
-      physicsSystem(EM,SigM,17),
-      renderSystem(EM,SigM,0)
+      AccM(std::make_shared<AccumulatorsManager>()),
+      inputSystem(EM,SigM,AccM,0),
+      gameSystem(EM,SigM,AccM,0),
+      physicsSystem(EM,SigM,AccM,17),
+      renderSystem(EM,SigM,AccM,0)
 {
     inputSystem.init();
     gameSystem.init();
@@ -39,11 +40,24 @@ Game::Game()
 void Game::loop()
 {
     Log("Game::loop start");
+    uint32_t last_ticks = SDL_GetTicks();
+    int frames = 0;
     while(true){
+        if(SigM->receive(Signals::Exit)){
+            break;
+        }
         uint32_t ticks = SDL_GetTicks();
         inputSystem.update(ticks);
         gameSystem.update(ticks);
         physicsSystem.update(ticks);
         renderSystem.update(ticks);
+        
+        frames++;
+        if(ticks > last_ticks + 1000){
+            std::cout << "fps:" << frames << std::endl;  
+            frames = 0;
+            last_ticks = ticks;
+        }
     }
+    AccM->print_statistics();
 }

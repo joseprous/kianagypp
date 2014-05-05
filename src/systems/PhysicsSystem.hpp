@@ -36,8 +36,8 @@ private:
 public:
     std::shared_ptr<btDiscreteDynamicsWorld> dynamicsWorld;
 
-    PhysicsSystem(EntityManagerSP em, SignalsManagerSP sigm, uint32_t period)
-        :System(em, sigm, period){}
+    PhysicsSystem(EntityManagerSP em, SignalsManagerSP sigm, AccumulatorsManagerSP accm, uint32_t period)
+        :System("PhysicsSystem",em, sigm, accm, period){}
 
     void init() override;
     void update() override;

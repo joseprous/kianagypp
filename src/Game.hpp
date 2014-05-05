@@ -28,6 +28,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include "systems/GameSystem.hpp"
 
 #include "SignalsManager.hpp"
+#include "AccumulatorsManager.hpp"
 
 class Game
 {
@@ -35,6 +36,7 @@ public:
     
     EntityManagerSP EM;
     SignalsManagerSP SigM;
+    AccumulatorsManagerSP AccM;
     
     InputSystem inputSystem;
     GameSystem gameSystem;
@@ -42,7 +44,7 @@ public:
     RenderSystem renderSystem;
 
     Game();
-    [[noreturn]] void loop();
+    void loop();
 };
 
 #endif

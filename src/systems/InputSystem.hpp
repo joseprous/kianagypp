@@ -28,8 +28,8 @@ class InputSystem : public System
 {
 public:
 
-    InputSystem(EntityManagerSP em, SignalsManagerSP sigm, uint32_t period)
-        :System(em,sigm,period){}
+    InputSystem(EntityManagerSP em, SignalsManagerSP sigm, AccumulatorsManagerSP accm, uint32_t period)
+        :System("InputSystem",em,sigm,accm,period){}
 
     void init() override;
     void update() override;

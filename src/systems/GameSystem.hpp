@@ -28,8 +28,8 @@ class GameSystem : public System
 {
 public:
 
-    GameSystem(EntityManagerSP em,SignalsManagerSP sigm,uint32_t period)
-        :System(em,sigm,period){}
+    GameSystem(EntityManagerSP em,SignalsManagerSP sigm, AccumulatorsManagerSP accm, uint32_t period)
+        :System("GameSystem",em,sigm,accm,period){}
 
     void init() override;
     void update() override;
