@@ -99,5 +99,12 @@ int main(int argc, char **argv)
     }
 
     game.loop();
-
+    std::cout << "Num brushes: " << map.entities[0].mBrushes.size() << std::endl;
+    int vertices = 0;
+    for(const brush &b : map.entities[0].mBrushes){
+        for(const poly &p : b.getMesh()){
+            vertices += p.vertexes.size();
+        }
+    }
+    std::cout << "num vertices: " << vertices << std::endl;
 }

@@ -64,7 +64,7 @@ Mesh getCubeMesh()
 Entity createPlayer(EntityManagerSP em, glm::vec3 position)
 {
     Entity player = em->addEntity();
-    em->attach(player, {Parts::Position, Parts::Camera, Parts::Movement, Parts::Signals, Parts::Mesh, /*Parts::GLShaders, Parts::GLMesh*//*, Parts::Collision*/});
+    em->attach(player, {Parts::Position, Parts::Camera, Parts::Movement, Parts::Signals, Parts::IQM /*, Parts::Mesh, Parts::GLShaders, Parts::GLMesh*//*, Parts::Collision*/});
 
     em->position[player] = {position,
                             glm::vec3(0,1,0),
@@ -81,6 +81,7 @@ Entity createPlayer(EntityManagerSP em, glm::vec3 position)
     em->mesh[player] = { getCubeMesh() };
     em->glMesh[player] = create_glmesh(em->mesh[player].mesh);
 
+    em->iqm[player] = create_iqm("models/untitled.iqm");
 //    em->collision[player] = create_collision_part(em->mesh[player].mesh, false, true);
 
     

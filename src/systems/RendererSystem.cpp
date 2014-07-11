@@ -106,14 +106,21 @@ void RenderSystem::update()
     glClearColor(0.0f,0.0f,0.5f,1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    
     glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
+
+    GLuint programId = 0;
+    if(SM.mGLPrograms.count("wireframe") > 0){
+        programId = SM.mGLPrograms["wireframe"];
+        glUseProgram(programId);
+    }
+    
     for(Entity entity : EM->entities){
         if(auto shaders = EM->getGLShaders(entity)){
             if(auto mesh = EM->getGLMesh(entity)){
-                GLuint programId = SM.GetShaderProgram(*shaders);
-                glUseProgram(programId);
-
+                if(SM.mGLPrograms.count("wireframe") == 0){
+                    programId = SM.GetShaderProgram(*shaders);
+                    glUseProgram(programId);
+                }
                 glm::mat4 Model      = glm::mat4(1.0f);
 
                 if(auto position = EM->getPosition(entity)){

@@ -36,7 +36,8 @@ void System::update(uint32_t ticks)
     auto t2 = std::chrono::high_resolution_clock::now();
     auto time_span = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
 
-    (*(AccM->get(mSystemName)))(time_span.count());
+//    (*(AccM->get(mSystemName)))(time_span.count());
+    AccM->update(mSystemName,time_span.count());
 
     mLast_ticks = ticks;
 }

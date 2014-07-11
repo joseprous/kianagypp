@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 project(kianagy++)
 
 SET (CMAKE_CXX_COMPILER           "/usr/bin/clang++")
-SET (CMAKE_CXX_FLAGS              "-std=c++11 -g -fno-omit-frame-pointer -Weverything -Werror -Wno-c++98-compat -Wno-missing-prototypes -Wno-padded -Wno-unused-parameter -Wno-c++98-compat-pedantic")
+#SET (CMAKE_CXX_FLAGS              "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
+SET (CMAKE_CXX_FLAGS              "${CMAKE_CXX_FLAGS} -O3 -std=c++11 -fno-omit-frame-pointer -Weverything -Werror -Wno-c++98-compat -Wno-missing-prototypes -Wno-padded -Wno-unused-parameter -Wno-c++98-compat-pedantic -Wno-gnu-anonymous-struct -Wno-nested-anon-types -Wno-float-equal")
 
 find_package(GLEW REQUIRED)
 
@@ -28,11 +29,11 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src)
 set_source_files_properties(
   ${CMAKE_BINARY_DIR}/map_scanner.cpp;${CMAKE_BINARY_DIR}/map_parser.cpp
   PROPERTIES
-  COMPILE_FLAGS "-Wno-everything"
+  COMPILE_FLAGS "-Wno-error"
 )
 
 set_source_files_properties(
-  ${CMAKE_SOURCE_DIR}/src/map/Map_Driver.cpp;${CMAKE_SOURCE_DIR}/src/map/Map.cpp
+  ${CMAKE_SOURCE_DIR}/src/map/Map_Driver.cpp;${CMAKE_SOURCE_DIR}/src/map/Map.cpp;${CMAKE_SOURCE_DIR}/src/iqm/texture.cpp;${CMAKE_SOURCE_DIR}/src/iqm/gpu-demo2.cpp;${CMAKE_SOURCE_DIR}/src/parts/IQMPart.cpp
   PROPERTIES
   COMPILE_FLAGS "-Wno-error"
 )
@@ -46,6 +47,7 @@ target_link_libraries(kianagy++ ${SDL2_LIBRARIES} GLEW GL ${BULLET_LIBRARIES})
 
 FILE(COPY ${CMAKE_SOURCE_DIR}/src/shaders DESTINATION ${CMAKE_BINARY_DIR})
 FILE(COPY ${CMAKE_SOURCE_DIR}/maps DESTINATION ${CMAKE_BINARY_DIR})
+FILE(COPY ${CMAKE_SOURCE_DIR}/models DESTINATION ${CMAKE_BINARY_DIR})
 
 
 

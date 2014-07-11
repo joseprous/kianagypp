@@ -49,10 +49,12 @@ class AccumulatorsManager
 {
 public:
     AccSP add(std::string name);
-    AccSP get(std::string name);
+    //AccSP get(std::string name);
+    void update(std::string name, long value);
     void print_statistics();
 private:
     std::map<std::string,AccSP> accumulators;
+    std::map<std::string,long> firsts;
 };
 
 typedef std::shared_ptr<AccumulatorsManager> AccumulatorsManagerSP;

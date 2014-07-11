@@ -27,6 +27,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include <initializer_list>
 #include <map>
 #include <set>
+#include <unordered_map>
 #include <boost/optional.hpp>
 
 #include "Logger.hpp"
@@ -39,6 +40,7 @@ along with kianagy++.  If not, see <http://www.gnu.org/licenses/>.
 #include "parts/CameraPart.hpp"
 #include "parts/SignalsPart.hpp"
 #include "parts/MovementPart.hpp"
+#include "parts/IQMPart.hpp"
 
 typedef size_t Entity;
 typedef int32_t Part_t;
@@ -52,7 +54,8 @@ enum class Parts : Part_t
     GLShaders,
     Camera,
     Signals,
-    Movement
+    Movement,
+    IQM
 };
 
 template <typename T>
@@ -60,7 +63,7 @@ class PartContainer
 {
 private:
 
-    std::map<Entity,T> data;
+    std::unordered_map<Entity,T> data;
 
 public:
 
@@ -74,7 +77,7 @@ class EntityManager
 {
 private:
 
-    std::map<Entity,std::bitset<32>> partMask; 
+    std::unordered_map<Entity,std::bitset<32>> partMask; 
 
     std::set<Entity> available_entities;
 
@@ -88,6 +91,7 @@ public:
     PartContainer<CameraPart> camera;
     PartContainer<SignalsPart> signals;
     PartContainer<MovementPart> movement;
+    PartContainer<IQMPart> iqm;
 
     std::set<Entity> entities;
    
